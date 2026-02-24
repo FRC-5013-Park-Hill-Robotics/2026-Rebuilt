@@ -19,7 +19,8 @@ import frc.robot.constants.CANConstants;
 import frc.robot.constants.IntakeConstants;
 
 public class Intake extends SubsystemBase {
-    private TalonFX intakeRollerMotor = new TalonFX(IntakeConstants.INTAKE_ROLLER_ID, CANConstants.CANBUS_AUX);
+    private TalonFX intakeRollerMotor = new TalonFX(CANConstants.INTAKE_MAIN_ID, CANConstants.CANBUS_AUX);
+    private TalonFX intakeMoverMotor = new TalonFX(CANConstants.INTAKE_RIGHT_ID, CANConstants.CANBUS_AUX);
 
     private VelocityVoltage m_VelocityVoltage = new VelocityVoltage(0);
 
@@ -29,7 +30,7 @@ public class Intake extends SubsystemBase {
     public Intake() {
         super();
         TalonFXConfiguration config = new TalonFXConfiguration();
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config.Slot0.kP = IntakeConstants.RollerGains.kP;
         config.Slot0.kI = IntakeConstants.RollerGains.kI;
@@ -45,7 +46,7 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_VelocityVoltage.withVelocity(target);
+        m_VelocityVoltage.withVelocity(limiter.calculate(target));
         intakeRollerMotor.setControl(m_VelocityVoltage);
     }
 

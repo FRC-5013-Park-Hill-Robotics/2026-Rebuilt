@@ -2,7 +2,7 @@ package frc.robot.constants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class IntakeConstants {
+public class ConveyorConstants {
     public final static class RollerGains {
         public static final double kP = 0.010371;
         public static final double kI = 0;
