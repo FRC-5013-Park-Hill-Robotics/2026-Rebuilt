@@ -4,20 +4,32 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.Autos;
+import frc.robot.commands.DRIVE;
 import frc.robot.commands.GamepadDrive;
+import frc.robot.commands.TurnToPose;
+import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.PoseConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LauncherRollers;
 import frc.robot.subsystems.Vision;
+import frc.robot.commands.TurnToPose;
+import frc.robot.commands.Shuttle;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,31 +38,35 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final CommandXboxController mDriver = new CommandXboxController(0);
   public final CommandSwerveDrivetrain mDrivetrain = TunerConstants.createDrivetrain();
 
-  // public final Intake mIntake = new Intake();
-  // public final LauncherRollers mRollers = new LauncherRollers();
+  public final Intake mIntake = new Intake();
+  public final Conveyor mConveyor = new Conveyor();
+  public final LauncherRollers mRollers = new LauncherRollers();
+  private static Alliance mAlliance = Alliance.Red;
 
   public static RobotContainer instance;
 
   private Field2d m_field = new Field2d();
 
-  //public final Vision camera = new Vision(mDrivetrain);
+  private final SendableChooser<Command> autoChooser;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  //public final Vision camera = new Vision(mDrivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    // Configure the trigger bindings
+    instance = this;
+    configureBindings();
+    configureAutonomousCommands();
 
     SmartDashboard.putData("Field", m_field);
 
-    instance = this;
-    configureBindings();
+    // Build an auto chooser. This will use Commands.none() as the default option.
+    SmartDashboard.clearPersistent("Auto Chooser");
+    autoChooser = AutoBuilder.buildAutoChooser(); 
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -67,19 +83,26 @@ public class RobotContainer {
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
-    // mDriver.x().onTrue(mIntake.setTargetC(100))
-    // .onFalse(mIntake.setTargetC(0));
+    mDriver.y().onTrue(mRollers.stopCommand().alongWith(mConveyor.stopC())); 
 
-    // mDriver.b().onTrue(mIntake.setTargetC(-100))
-    // .onFalse(mIntake.setTargetC(0));
+    mDriver.x().onTrue(mIntake.setTargetC(100))
+     .onFalse(mIntake.setTargetC(0));
 
-    // mDriver.a().onTrue(mRollers.stopCommand()); 
+    mDriver.b().onTrue(mRollers.setSpeedTopCommand(20)
+                          .andThen(mRollers.setSpeedBackCommand(20)));
+    mDriver.a().onTrue(mRollers.setSpeedBottomCommand(15)
+                          .alongWith(mConveyor.setTargetC(15)));
 
-    // mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
-    // mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
+    mDriver.leftBumper().whileTrue(new TurnToPose(PoseConstants.BLUE_HUB, mDrivetrain)); 
+    mDriver.rightBumper().whileTrue(new TurnToPose(PoseConstants.RED_HUB, mDrivetrain)); 
+
+    mDriver.rightStick().whileTrue(new Shuttle(mDrivetrain));
+
+    mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
+    mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
     
-    // mDriver.povLeft().onTrue(mRollers.incrementSpeedBottomCommand(-4));
-    // mDriver.povRight().onTrue(mRollers.incrementSpeedBottomCommand(4));
+    // mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-4));
+    // mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(4));
   }
  
   public void updateField(){
@@ -91,15 +114,35 @@ public class RobotContainer {
     SmartDashboard.putNumber("BotH", mDrivetrain.getState().Pose.getRotation().getDegrees());
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+
+  public void configureAutonomousCommands() {
+    // WaitCommand wait025 = new WaitCommand(0.25);
+    // NamedCommands.registerCommand("Wait0.25", wait025);
+
+  
+    WaitCommand wait5 = new WaitCommand(0.5);
+    NamedCommands.registerCommand("Wait0.5", wait5);
+
+    WaitCommand wait10 = new WaitCommand(1);
+    NamedCommands.registerCommand("Wait1", wait10);
+
+    WaitCommand wait15 = new WaitCommand(1.5);
+    NamedCommands.registerCommand("Wait1.5", wait15);
+  }
+  
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autoChooser.getSelected();
   }
+
+  public static void setAlliance(Alliance alliance){
+    mAlliance = alliance;
+  }
+
+  public static Alliance getAlliance(){
+    return mAlliance;
+  }
+  
 
   public static RobotContainer getInstance(){
 		return instance;

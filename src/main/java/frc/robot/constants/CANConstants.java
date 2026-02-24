@@ -27,7 +27,13 @@ public final class CANConstants {
     public static final int BACK_RIGHT_DRIVE_MOTOR_ID = 12;
     public static final int BACK_RIGHT_ENCODER_ID = 13;
 
-    public static final int INTAKE_ID = 31;
-    public static final int LAUNCHER_TOP_ID = 32;
-    public static final int LAUNCHER_BOTTOM_ID = 33;
+    public static final int OUTTAKE_BOTTOM_ID = 30;
+    public static final int OUTTAKE_LT_ID = 31;
+    public static final int OUTTAKE_LB_ID = 32; //Back Rollers
+    public static final int OUTTAKE_RT_ID = 33;
+    public static final int OUTTAKE_RB_ID = 34;
+
+     public static final int INTAKE_MAIN_ID = 35; 
+    public static final int INTAKE_LEFT_ID = 36; //Conveyor
+    public static final int INTAKE_RIGHT_ID = 37; //Bringer Upper
 }

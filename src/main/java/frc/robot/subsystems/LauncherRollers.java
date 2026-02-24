@@ -29,16 +29,22 @@ import static edu.wpi.first.units.Units.Seconds;
 
 public class LauncherRollers extends SubsystemBase {
   /** Creates a new LauncherRollers. */
-  private TalonFX bottomMotor = new TalonFX(CANConstants.LAUNCHER_BOTTOM_ID, CANConstants.CANBUS_AUX);
-  private TalonFX topMotor= new TalonFX(CANConstants.LAUNCHER_TOP_ID, CANConstants.CANBUS_AUX);
+  private TalonFX OuttakeLT = new TalonFX(CANConstants.OUTTAKE_LT_ID, CANConstants.CANBUS_AUX);
+  private TalonFX OuttakeLB= new TalonFX(CANConstants.OUTTAKE_LB_ID, CANConstants.CANBUS_AUX);
+  private TalonFX OuttakeRT= new TalonFX(CANConstants.OUTTAKE_RT_ID, CANConstants.CANBUS_AUX);
+  private TalonFX OuttakeRB= new TalonFX(CANConstants.OUTTAKE_RB_ID, CANConstants.CANBUS_AUX);
+  private TalonFX OuttakeBottom = new TalonFX(CANConstants.OUTTAKE_BOTTOM_ID, CANConstants.CANBUS_AUX);
+  
   private VelocityVoltage m_BottomVoltage = new VelocityVoltage(0);
   private VelocityVoltage m_TopVoltage = new VelocityVoltage(0);
+  private VelocityVoltage m_BackVoltage = new VelocityVoltage(0);
   private double goalSpeedBottom = 0;
   private double goalSpeedTop = 0;
+  private double goalSpeedBack = 0;
 
   public LauncherRollers() {
     TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
-    bottomConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    bottomConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     bottomConfig.Slot0.kP = LauncherConstants.RollerGains.kP;
     bottomConfig.Slot0.kI = LauncherConstants.RollerGains.kI;
@@ -46,24 +52,50 @@ public class LauncherRollers extends SubsystemBase {
     bottomConfig.Slot0.kS = LauncherConstants.RollerGains.kS;
     bottomConfig.Slot0.kV = LauncherConstants.RollerGains.kV;
     bottomConfig.Slot0.kA = LauncherConstants.RollerGains.kA;
-    bottomMotor.set(0);
-    bottomMotor.getConfigurator().apply(bottomConfig);
+    OuttakeBottom.set(0);
+    OuttakeBottom.getConfigurator().apply(bottomConfig);
     m_BottomVoltage.withSlot(0);
     
-
-    TalonFXConfiguration topConfig = new TalonFXConfiguration();
-    topConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    topConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topConfig.Slot0.kP = LauncherConstants.RollerGains.kP;
-    topConfig.Slot0.kI = LauncherConstants.RollerGains.kI;
-    topConfig.Slot0.kD = LauncherConstants.RollerGains.kD;
-    topConfig.Slot0.kS = LauncherConstants.RollerGains.kS;
-    topConfig.Slot0.kV = LauncherConstants.RollerGains.kV;
-    topConfig.Slot0.kA = LauncherConstants.RollerGains.kA;
-    topMotor.set(0);
-    topMotor.getConfigurator().apply(bottomConfig);
+    TalonFXConfiguration topConfig1 = new TalonFXConfiguration();
+    topConfig1.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    topConfig1.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    topConfig1.Slot0.kP = LauncherConstants.RollerGains.kP;
+    topConfig1.Slot0.kI = LauncherConstants.RollerGains.kI;
+    topConfig1.Slot0.kD = LauncherConstants.RollerGains.kD;
+    topConfig1.Slot0.kS = LauncherConstants.RollerGains.kS;
+    topConfig1.Slot0.kV = LauncherConstants.RollerGains.kV;
+    topConfig1.Slot0.kA = LauncherConstants.RollerGains.kA;
+    OuttakeRT.set(0);
+    OuttakeRB.set(0);
+    OuttakeRT.getConfigurator().apply(topConfig1);
+    OuttakeRB.getConfigurator().apply(topConfig1);
     m_TopVoltage.withSlot(0);
 
+    TalonFXConfiguration topConfig2 = new TalonFXConfiguration();
+    topConfig2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    topConfig2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    topConfig2.Slot0.kP = LauncherConstants.RollerGains.kP;
+    topConfig2.Slot0.kI = LauncherConstants.RollerGains.kI;
+    topConfig2.Slot0.kD = LauncherConstants.RollerGains.kD;
+    topConfig2.Slot0.kS = LauncherConstants.RollerGains.kS;
+    topConfig2.Slot0.kV = LauncherConstants.RollerGains.kV;
+    topConfig2.Slot0.kA = LauncherConstants.RollerGains.kA;
+    OuttakeLT.set(0);
+    OuttakeLT.getConfigurator().apply(topConfig2);
+    m_TopVoltage.withSlot(0);
+
+    TalonFXConfiguration backConfig = new TalonFXConfiguration();
+    backConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    backConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    backConfig.Slot0.kP = LauncherConstants.RollerGains.kP;
+    backConfig.Slot0.kI = LauncherConstants.RollerGains.kI;
+    backConfig.Slot0.kD = LauncherConstants.RollerGains.kD;
+    backConfig.Slot0.kS = LauncherConstants.RollerGains.kS;
+    backConfig.Slot0.kV = LauncherConstants.RollerGains.kV;
+    backConfig.Slot0.kA = LauncherConstants.RollerGains.kA;
+    OuttakeLB.set(0);
+    OuttakeLB.getConfigurator().apply(backConfig);
+    m_BottomVoltage.withSlot(0);
     this.start();
   }
 
@@ -71,68 +103,51 @@ public class LauncherRollers extends SubsystemBase {
   public void periodic() {
     
     m_BottomVoltage.withVelocity(goalSpeedBottom);
-    bottomMotor.setControl(m_BottomVoltage);
+    OuttakeBottom.setControl(m_BottomVoltage);
+  
     m_TopVoltage.withVelocity(goalSpeedTop);
-    topMotor.setControl(m_TopVoltage);
-    
+    OuttakeLT.setControl(m_TopVoltage);
+    OuttakeRB.setControl(m_TopVoltage);
+    OuttakeRT.setControl(m_TopVoltage);
+
+    m_BackVoltage.withVelocity(goalSpeedBack);
+    OuttakeLB.setControl(m_BackVoltage);
+
     if(goalSpeedBottom == 0){
-      bottomMotor.setVoltage(0);
+      OuttakeBottom.setVoltage(0);
     }
     if(goalSpeedTop == 0){
-      topMotor.setVoltage(0);
+      OuttakeLT.setVoltage(0);
+      OuttakeRB.setVoltage(0);
+      OuttakeRT.setVoltage(0);
+    }
+    if(goalSpeedBack == 0){
+      OuttakeLB.setVoltage(0);
     }
     
-    SmartDashboard.putNumber("Shooter Top Speed", topMotor.getVelocity().getValueAsDouble()); 
-    SmartDashboard.putNumber("Shooter Top Goal", goalSpeedTop);
+    SmartDashboard.putNumber("Outtake LT Speed", OuttakeLT.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake RB Speed", OuttakeRB.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake RT Speed", OuttakeRT.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake Top Goal", goalSpeedTop);
 
-    SmartDashboard.putNumber("Shooter Bottom Speed", bottomMotor.getVelocity().getValueAsDouble()); 
-    SmartDashboard.putNumber("Shooter Bottom Goal", goalSpeedBottom);  
+    SmartDashboard.putNumber("Outtake Bottom Speed", OuttakeBottom.getVelocity().getValueAsDouble()); 
+    SmartDashboard.putNumber("Outtake Bottom Goal", goalSpeedBottom);  
+
+    SmartDashboard.putNumber("Outake LB Speed", OuttakeLB.getVelocity().getValueAsDouble()); 
+    SmartDashboard.putNumber("Outtake Back Goal", goalSpeedBack);  
   }
 
+  // GENERAL METHODS
   public void start() {
     this.goalSpeedBottom = 0;
     this.goalSpeedTop = 0;
+    this.goalSpeedBack = 0;
   }
   
   public void stopLauncher(){
     this.goalSpeedBottom = 0;
     this.goalSpeedTop = 0;
-  } 
-
-  public void incrementSpeedTop(double rpsChange) {
-    this.goalSpeedTop += rpsChange;
-  }
-
-  public void incrementSpeedBottom(double rpsChange) {
-    this.goalSpeedBottom += rpsChange;
-  }
-
-  public void setSpeedTop(double rps) {
-    this.goalSpeedTop = rps;
-  }
-
-  public void setSpeedBottom(double rps) {
-    this.goalSpeedBottom = rps;
-  }
-
-  public Command incrementSpeedTopCommand(double rpsChange){
-    Command result = runOnce(()-> incrementSpeedTop(rpsChange));
-    return result;
-  } 
-
-  public Command incrementSpeedBottomCommand(double rpsChange){
-    Command result = runOnce(()-> incrementSpeedBottom(rpsChange));
-    return result;
-  } 
-
-  public Command setSpeedTopCommand(double rps){
-    Command result = runOnce(()-> setSpeedTop(rps));
-    return result;
-  } 
-  
-  public Command setSpeedBottomCommand(double rps){
-    Command result = runOnce(()-> setSpeedBottom(rps));
-    return result;
+    this.goalSpeedBack = 0;
   } 
 
   public Command startCommand(){
@@ -144,6 +159,64 @@ public class LauncherRollers extends SubsystemBase {
     Command result = runOnce(this::stopLauncher);
     return result;
   }
+
+  // TOP ROLLER METHODS
+  public void incrementSpeedTop(double rpsChange) {
+    this.goalSpeedTop += rpsChange;
+  }
+
+  public void setSpeedTop(double rps) {
+    this.goalSpeedTop = rps;
+  }
+
+  public Command incrementSpeedTopCommand(double rpsChange){
+    Command result = runOnce(()-> incrementSpeedTop(rpsChange));
+    return result;
+  } 
+
+  public Command setSpeedTopCommand(double rps){
+    Command result = runOnce(()-> setSpeedTop(rps));
+    return result;
+  } 
+
+  // BOTTOM ROLLER METHODS
+  public void setSpeedBottom(double rps) {
+    this.goalSpeedBottom = rps;
+  }
+
+  public void incrementSpeedBottom(double rpsChange) {
+    this.goalSpeedBottom += rpsChange;
+  }
+
+  public Command incrementSpeedBottomCommand(double rpsChange){
+    Command result = runOnce(()-> incrementSpeedBottom(rpsChange));
+    return result;
+  } 
+  
+  public Command setSpeedBottomCommand(double rps){
+    Command result = runOnce(()-> setSpeedBottom(rps));
+    return result;
+  } 
+
+  // BACK ROLLER METHODS
+  public void setSpeedBack(double rps) {
+    this.goalSpeedBack = rps;
+  }
+
+  public void incrementSpeedBack(double rpsChange) {
+    this.goalSpeedBack += rpsChange;
+  }
+
+  public Command incrementSpeedBackCommand(double rpsChange){
+    Command result = runOnce(()-> incrementSpeedBack(rpsChange));
+    return result;
+  } 
+  
+  public Command setSpeedBackCommand(double rps){
+    Command result = runOnce(()-> setSpeedBack(rps));
+    return result;
+  } 
+
 
     // // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));

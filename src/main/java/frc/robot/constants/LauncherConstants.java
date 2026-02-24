@@ -13,9 +13,9 @@ public final class LauncherConstants {
     public final static double INITIAL_SPEED_BOTTOM = 0;
 
     public final static class RollerGains {
-        public static final double kP = 0.1;
+        public static final double kP = 0.5;
         public static final double kI = 0;
-        public static final double kD = 0;
+        public static final double kD = 0.0;
         public static final double kF = 0;
         public static final double kS = 0.39545;
         public static final double kV = 0.12212;
@@ -61,20 +61,4 @@ public final class LauncherConstants {
         //make a skew linear interpolator based on ty
 
     }
-    // public final static double RETRACT_SETPOINT = 0;
-    // public static final double AMP_ANGLE_RADANS = Math.toRadians(51);//Math.toRadians(96.5);
-    // public static final double DUCK_RADIANS = Math.toRadians(29);
-    // public static final double START_ANGLE_RADIANS = Math.toRadians(29);
-    // //start angle used to be 60, and 51
-
-    // public static final double SPEAKER_ANGLE_RADIANS = Math.toRadians(53);
-    // public static final double PODIUM_ANGLE_RADIANS = Math.toRadians(35);
-    // public static final double SHUTTLING_ANGLE = Math.toRadians(38);
-    // public static final double SHOULDER_ANGLE_MAX = Math.toRadians(65);
-    // public static final double SHOULDER_ANGLE_MIN = Math.toRadians(25);
-
-    // public static final double SHOULDER_CURRENT_LIMIT = 4;
-
-    // public static final double SHOULDER_CURRENT_THRESHOLD = 0.2;
-
 }

@@ -42,12 +42,12 @@ public class LinearInterpolator {
     private void build_table(double[][] data) {
         int rows = data.length;
         if (rows < 1) {
-            System.out.println("ERROR: linearInterpolator needs at least one data point.");
+            //System.out.println("ERROR: linearInterpolator needs at least one data point.");
             return;
         }
         int cols = data[0].length;
         if (cols != 2) {
-            System.out.println("ERROR: linearInterpolator number of columns should be 2");
+            //System.out.println("ERROR: linearInterpolator number of columns should be 2");
             return;
         }
 
@@ -80,7 +80,7 @@ public class LinearInterpolator {
     public double getInterpolatedValue(double x) {
 
         if (!initialized) {
-            System.out.println("ERROR: linearInterpolator number of columns should be 2");
+            //System.out.println("ERROR: linearInterpolator number of columns should be 2");
             return 0.0;
         }
 

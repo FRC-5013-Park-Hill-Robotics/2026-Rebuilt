@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.LiveDriveStats;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class GamepadDrive extends Command {
@@ -44,8 +45,7 @@ public class GamepadDrive extends Command {
 	@Override
 	public void execute() {
 
-		//double throttle = modifyAxis(m_gamepad.getRightTriggerAxis());
-		double throttle = 1;
+		double throttle = modifyAxis(m_gamepad.getRightTriggerAxis());
 
 		double translationX = modifyAxis(-m_gamepad.getLeftY());
 		double translationY = modifyAxis(-m_gamepad.getLeftX());
@@ -66,20 +66,22 @@ public class GamepadDrive extends Command {
 		double i = 1.0;
 
 		if(m_gamepad.getLeftTriggerAxis() > 0.5){
-			i = 0.2;
+			i = 0.5;
 		}
 
-		m_drivetrain.setControl(drive
-			.withVelocityX(-CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(i*translationX)))
-			.withVelocityY(CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(i*translationY))) 
-			.withRotationalRate(-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(translationH)));
+		LiveDriveStats.OUTPUT_X = translationX;
+		LiveDriveStats.OUTPUT_Y = translationY;
+		LiveDriveStats.OUTPUT_H = translationH;
 		
+		// m_drivetrain.setControl(drive
+		// 	.withVelocityX(-CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(i*translationX)))
+		// 	.withVelocityY(CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(i*translationY))) 
+		// 	.withRotationalRate(-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(translationH)));
 
 		SmartDashboard.putNumber("Throttle", throttle);
-		SmartDashboard.putNumber("Drive Rotation",-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
+		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
 		SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
-		SmartDashboard.putNumber("VY", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
-		
+		SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
 	 }
 
 	@Override
@@ -88,7 +90,6 @@ public class GamepadDrive extends Command {
 	}
 
 	private static double modifyAxis(double value) {
-	
 		return modifyAxis(value, 1);
 	}
 	private static double modifyAxis(double value, int exponent) {
