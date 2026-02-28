@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.RobotController;
@@ -35,12 +36,16 @@ public class LauncherRollers extends SubsystemBase {
   private TalonFX OuttakeRB= new TalonFX(CANConstants.OUTTAKE_RB_ID, CANConstants.CANBUS_AUX);
   private TalonFX OuttakeBottom = new TalonFX(CANConstants.OUTTAKE_BOTTOM_ID, CANConstants.CANBUS_AUX);
   
+  private SlewRateLimiter m_BottomLimiter = new SlewRateLimiter(3);
   private VelocityVoltage m_BottomVoltage = new VelocityVoltage(0);
+  private SlewRateLimiter m_TopLimiter = new SlewRateLimiter(10);
   private VelocityVoltage m_TopVoltage = new VelocityVoltage(0);
+  private SlewRateLimiter m_BackLimiter = new SlewRateLimiter(10);
   private VelocityVoltage m_BackVoltage = new VelocityVoltage(0);
   private double goalSpeedBottom = 0;
   private double goalSpeedTop = 0;
   private double goalSpeedBack = 0;
+  private boolean STOP = false;
 
   public LauncherRollers() {
     TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
@@ -102,16 +107,18 @@ public class LauncherRollers extends SubsystemBase {
   @Override
   public void periodic() {
     
-    m_BottomVoltage.withVelocity(goalSpeedBottom);
-    OuttakeBottom.setControl(m_BottomVoltage);
-  
-    m_TopVoltage.withVelocity(goalSpeedTop);
-    OuttakeLT.setControl(m_TopVoltage);
-    OuttakeRB.setControl(m_TopVoltage);
-    OuttakeRT.setControl(m_TopVoltage);
+    if(!STOP){
+      m_BottomVoltage.withVelocity(m_BottomLimiter.calculate(goalSpeedBottom));
+      OuttakeBottom.setControl(m_BottomVoltage);
+    
+      m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop));
+      OuttakeLT.setControl(m_TopVoltage);
+      OuttakeRB.setControl(m_TopVoltage);
+      OuttakeRT.setControl(m_TopVoltage);
 
-    m_BackVoltage.withVelocity(goalSpeedBack);
-    OuttakeLB.setControl(m_BackVoltage);
+      m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack));
+      OuttakeLB.setControl(m_BackVoltage);
+    }
 
     if(goalSpeedBottom == 0){
       OuttakeBottom.setVoltage(0);
@@ -139,12 +146,14 @@ public class LauncherRollers extends SubsystemBase {
 
   // GENERAL METHODS
   public void start() {
+    STOP = false;
     this.goalSpeedBottom = 0;
     this.goalSpeedTop = 0;
     this.goalSpeedBack = 0;
   }
   
   public void stopLauncher(){
+    STOP = true;
     this.goalSpeedBottom = 0;
     this.goalSpeedTop = 0;
     this.goalSpeedBack = 0;
@@ -167,6 +176,10 @@ public class LauncherRollers extends SubsystemBase {
 
   public void setSpeedTop(double rps) {
     this.goalSpeedTop = rps;
+  }
+
+  public void setSpeedFromDisTop(double distance) {
+    this.goalSpeedTop = LauncherConstants.TargetConstants.LAUNCHER_TY_SHOOTER_SPEED_INTERPOLATOR.getInterpolatedValue(distance);
   }
 
   public Command incrementSpeedTopCommand(double rpsChange){
