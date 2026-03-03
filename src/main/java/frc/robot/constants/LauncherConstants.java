@@ -22,41 +22,14 @@ public final class LauncherConstants {
         public static final double kA = 0.0046099;
     }
     public static final class TargetConstants{
-        //ty is the first number, angle in degrees is the second
-		public static final double[][] TY_ANGLE_ARRAY = {
-            //subwoofer angle is 63 with a speed of 55
-				{8.9,26.7},
-				{7.6,27.7},
-				{6.4,28.5},
-                {5.8, 28.5},
-				{4.9,29},
-                {3.8,31},
-                {2.7,33},
-				{0.1,35},
-				{-6.1,39},
-				{-26.5,53}
-			};
         //ty is the first number, shooter speed in rps is the second
 		public static final double[][] TY_SHOOTER_SPEED_ARRAY = {
-				{8.9,50},
-				{7.6,50},
-				{6.4,50},
-				{5.3,50},
-                {3.8,50},
-                {2.7,50},
-				{0.1,50},
-				{-6.1,50},
-				{-26.5,50}
+				{0,0},
+				{1,5},
+				{2,10},
+				{3,15}
 		};
 
-
-        //make a skew linear interpolator based on ty
-        // public static final double[][] TY_SKEW_ARRAY = {
-        //     {}
-        // };
-				
-
-		public static final LinearInterpolator LAUNCHER_TY_ANGLE_INTERPOLATOR = new LinearInterpolator(TY_ANGLE_ARRAY);
 		public static final LinearInterpolator LAUNCHER_TY_SHOOTER_SPEED_INTERPOLATOR = new LinearInterpolator(TY_SHOOTER_SPEED_ARRAY);
         //make a skew linear interpolator based on ty
 

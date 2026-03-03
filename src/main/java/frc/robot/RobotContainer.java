@@ -17,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.DRIVE;
 import frc.robot.commands.GamepadDrive;
+import frc.robot.commands.ShootBasedOffDistance;
 import frc.robot.commands.TurnToPose;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.PoseConstants;
@@ -81,25 +81,31 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
+    //mRollers.setDefaultCommand(new ShootBasedOffDistance(new Pose2d(0, 0, new Rotation2d(0)), mDrivetrain, mRollers));
+
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
-    mDriver.y().onTrue(mRollers.stopCommand().alongWith(mConveyor.stopC())); 
+    mDriver.y().onTrue(mIntake.moveIntakeInC()); 
+    mDriver.b().onTrue(mIntake.moveIntakeOutC()); 
+
+    // mDriver.y().onTrue(mRollers.stopCommand().alongWith(mConveyor.stopC())); 
+    // mDriver.start().onTrue(mRollers.startCommand());
 
     mDriver.x().onTrue(mIntake.setTargetC(100))
      .onFalse(mIntake.setTargetC(0));
 
-    mDriver.b().onTrue(mRollers.setSpeedTopCommand(20)
-                          .andThen(mRollers.setSpeedBackCommand(20)));
-    mDriver.a().onTrue(mRollers.setSpeedBottomCommand(15)
-                          .alongWith(mConveyor.setTargetC(15)));
+    // mDriver.b().onTrue(mRollers.setSpeedTopCommand(20)
+    //                       .andThen(mRollers.setSpeedBackCommand(20)));
+    // mDriver.a().onTrue(mRollers.setSpeedBottomCommand(15)
+    //                       .alongWith(mConveyor.setTargetC(30)));
 
-    mDriver.leftBumper().whileTrue(new TurnToPose(PoseConstants.BLUE_HUB, mDrivetrain)); 
-    mDriver.rightBumper().whileTrue(new TurnToPose(PoseConstants.RED_HUB, mDrivetrain)); 
+    // mDriver.leftBumper().whileTrue(new TurnToPose(PoseConstants.BLUE_HUB, mDrivetrain)); 
+    // mDriver.rightBumper().whileTrue(new TurnToPose(PoseConstants.RED_HUB, mDrivetrain)); 
 
-    mDriver.rightStick().whileTrue(new Shuttle(mDrivetrain));
+    // mDriver.rightStick().whileTrue(new Shuttle(mDrivetrain));
 
-    mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
-    mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
+    // mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
+    // mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
     
     // mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-4));
     // mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(4));

@@ -15,17 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Shuttle extends Command {
   /** Creates a new Shuttle. */
-
-  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DriveConstants.MaxSpeed * 0.1).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.1) // Add a 10% deadband
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-
 
   private final PIDController ControllerH = DriveConstants.ControllerH;
 
@@ -65,9 +61,7 @@ public class Shuttle extends Command {
 
     SmartDashboard.putNumber("PoseOutputH", OutputH);
 
-    m_drivetrain.setControl(
-      drive.withRotationalRate(OutputH)
-    );
+    LiveDriveStats.OUTPUT_H = OutputH;
   }
 
   // Called once the command ends or is interrupted.

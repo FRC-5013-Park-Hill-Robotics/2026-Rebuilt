@@ -4,33 +4,26 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.swerve.SwerveRequest;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.constants.DriveConstants;
-import frc.robot.constants.LiveDriveStats;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LauncherRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TurnToPose extends Command {
-  /** Creates a new TurnToPose. */
-
-  private final PIDController ControllerH = DriveConstants.ControllerH;
+public class ShootBasedOffDistance extends Command {
 
   private CommandSwerveDrivetrain m_drivetrain;
+  private LauncherRollers m_launcherRollers;
   private Pose2d m_targetPose;
 
-  public TurnToPose(Pose2d targetPose, CommandSwerveDrivetrain drivetrain) {
-    ControllerH.enableContinuousInput(-Math.PI, Math.PI);
+  /** Creates a new ShootBasedOffDistance. */
+  public ShootBasedOffDistance(Pose2d targetPose, CommandSwerveDrivetrain drivetrain, LauncherRollers rollers) {
     m_drivetrain = drivetrain;
+    m_launcherRollers = rollers;
     m_targetPose = targetPose;
+    addRequirements(m_launcherRollers);
   }
 
   // Called when the command is initially scheduled.
@@ -43,16 +36,12 @@ public class TurnToPose extends Command {
     double ErrorX = m_drivetrain.getState().Pose.getX() - m_targetPose.getX();
     double ErrorY = m_drivetrain.getState().Pose.getY() - m_targetPose.getY();
 
-    double ErrorH = Math.atan2(ErrorY, ErrorX) - m_drivetrain.getState().Pose.getRotation().getRadians();
-
     SmartDashboard.putNumber("PoseErrorX", ErrorX);
     SmartDashboard.putNumber("PoseErrorY", ErrorY);
 
-    double OutputH = MathUtil.clamp(ControllerH.calculate(ErrorH), -DriveConstants.MaxAngularRate, DriveConstants.MaxAngularRate);
+    double ErrorDiagonal = Math.sqrt(Math.pow(ErrorX, 2) + Math.pow(ErrorY, 2));
 
-    SmartDashboard.putNumber("PoseOutputH", OutputH);
-
-    LiveDriveStats.OUTPUT_H = OutputH;
+    m_launcherRollers.setSpeedFromDisTop(ErrorDiagonal);    
   }
 
   // Called once the command ends or is interrupted.
