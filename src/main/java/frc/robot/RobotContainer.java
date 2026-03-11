@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,9 +20,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.commands.ShootBasedOffDistance;
+import frc.robot.commands.ShootFromZones;
 import frc.robot.commands.TurnToPose;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
+import frc.robot.constants.LauncherConstants.TargetConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Conveyor;
@@ -30,6 +34,7 @@ import frc.robot.subsystems.LauncherRollers;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.TurnToPose;
 import frc.robot.commands.Shuttle;
+import frc.robot.commands.TurnAndShootToTarget;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -53,7 +58,7 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser;
 
-  //public final Vision camera = new Vision(mDrivetrain);
+  public final Vision camera = new Vision(mDrivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -81,7 +86,7 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
-    //mRollers.setDefaultCommand(new ShootBasedOffDistance(new Pose2d(0, 0, new Rotation2d(0)), mDrivetrain, mRollers));
+    mRollers.setDefaultCommand(new ShootFromZones(mDrivetrain, mRollers));
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
@@ -93,6 +98,10 @@ public class RobotContainer {
 
     mDriver.x().onTrue(mIntake.setTargetC(100))
      .onFalse(mIntake.setTargetC(0));
+
+    mDriver.b().whileTrue(new TurnAndShootToTarget(PoseConstants.RED_HUB, mDrivetrain, mRollers, mConveyor));
+
+    mDriver.a().onTrue(mRollers.toggleStopCommand());
 
     // mDriver.b().onTrue(mRollers.setSpeedTopCommand(20)
     //                       .andThen(mRollers.setSpeedBackCommand(20)));
@@ -114,6 +123,9 @@ public class RobotContainer {
   public void updateField(){
     Pose2d i = mDrivetrain.getState().Pose;
     m_field.setRobotPose(i);
+
+    FieldObject2d targets = m_field.getObject("Targets");
+    targets.setPoses(LiveDriveStats.CURRENT_SHOOT_TARGET1);
 
     SmartDashboard.putNumber("BotX", mDrivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("BotY", mDrivetrain.getState().Pose.getY());

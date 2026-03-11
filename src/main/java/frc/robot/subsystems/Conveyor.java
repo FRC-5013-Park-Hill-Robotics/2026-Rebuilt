@@ -66,7 +66,7 @@ public class Conveyor extends SubsystemBase {
   public void increment(double amount){
     goalSpeed += amount;
   }
-  
+
   public Command stopC(){
     Command result = runOnce(this::stop);
     return result;

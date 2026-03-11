@@ -41,7 +41,7 @@ public class ShootBasedOffDistance extends Command {
 
     double ErrorDiagonal = Math.sqrt(Math.pow(ErrorX, 2) + Math.pow(ErrorY, 2));
 
-    m_launcherRollers.setSpeedFromDisTop(ErrorDiagonal);    
+    //m_launcherRollers.setSpeedFromDisTop(ErrorDiagonal);    
   }
 
   // Called once the command ends or is interrupted.

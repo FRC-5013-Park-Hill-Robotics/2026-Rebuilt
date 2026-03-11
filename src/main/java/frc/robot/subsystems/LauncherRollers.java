@@ -145,6 +145,11 @@ public class LauncherRollers extends SubsystemBase {
   }
 
   // GENERAL METHODS
+  public double getSpeedFromDist(double distance) {
+    return LauncherConstants.TargetConstants.LAUNCHER_TY_SHOOTER_SPEED_INTERPOLATOR.getInterpolatedValue(distance);
+  } //No Command Attached
+
+  // GENERAL COMMANDS
   public void start() {
     STOP = false;
     this.goalSpeedBottom = 0;
@@ -154,6 +159,13 @@ public class LauncherRollers extends SubsystemBase {
   
   public void stopLauncher(){
     STOP = true;
+    this.goalSpeedBottom = 0;
+    this.goalSpeedTop = 0;
+    this.goalSpeedBack = 0;
+  } 
+
+  public void toggleStopLauncher(){
+    STOP = !STOP;
     this.goalSpeedBottom = 0;
     this.goalSpeedTop = 0;
     this.goalSpeedBack = 0;
@@ -169,6 +181,11 @@ public class LauncherRollers extends SubsystemBase {
     return result;
   }
 
+  public Command toggleStopCommand(){
+  Command result = runOnce(this::toggleStopLauncher);
+  return result;
+  }
+
   // TOP ROLLER METHODS
   public void incrementSpeedTop(double rpsChange) {
     this.goalSpeedTop += rpsChange;
@@ -178,9 +195,6 @@ public class LauncherRollers extends SubsystemBase {
     this.goalSpeedTop = rps;
   }
 
-  public void setSpeedFromDisTop(double distance) {
-    this.goalSpeedTop = LauncherConstants.TargetConstants.LAUNCHER_TY_SHOOTER_SPEED_INTERPOLATOR.getInterpolatedValue(distance);
-  }
 
   public Command incrementSpeedTopCommand(double rpsChange){
     Command result = runOnce(()-> incrementSpeedTop(rpsChange));
@@ -231,54 +245,54 @@ public class LauncherRollers extends SubsystemBase {
   } 
 
 
-    // // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Angle> m_rotation = mutable(Rotations.of(0));
-    // // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // // reallocation.
-    // private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RotationsPerSecond.of(0));
-    // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-    //         // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-    //         new SysIdRoutine.Config( Volts.of(1).per(Seconds.of(1)), Volts.of(7), null,null),
-    //         new SysIdRoutine.Mechanism(
-    //                 // Tell SysId how to plumb the driving voltage to the motors.
-    //                 (Measure<Voltage> volts) -> {
-    //                     bottomMotor.setVoltage(volts.in(Volts));
-    //                     topMotor.setVoltage(volts.in(Volts));
-    //                 },
-    //                 // Tell SysId how to record a frame of data for each motor on the mechanism
-    //                 // being
-    //                 // characterized.
-    //                 log -> {
-    //                     // Record a frame for the wheel motor. 
-    //                     log.motor("bottom")
-    //                             .voltage(
-    //                                     m_appliedVoltage.mut_replace(
-    //                                             bottomMotor.get() * RobotController.getBatteryVoltage(), Volts))
-    //                             .angularPosition(m_rotation.mut_replace(bottomMotor.getPosition().getValueAsDouble(), Rotations))
-    //                             .angularVelocity(
-    //                                     m_velocity.mut_replace(bottomMotor.getVelocity().getValueAsDouble(), RadiansPerSecond));
-    //                     log.motor("top")
-    //                             .voltage(
-    //                                     m_appliedVoltage.mut_replace(
-    //                                             topMotor.get() * RobotController.getBatteryVoltage(), Volts))
-    //                             .angularPosition(m_rotation.mut_replace(topMotor.getPosition().getValueAsDouble(), Rotations))
-    //                             .angularVelocity(
-    //                                     m_velocity.mut_replace(topMotor.getVelocity().getValueAsDouble(), RadiansPerSecond));
+  // // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+  // private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
+  // // Mutable holder for unit-safe linear distance values, persisted to avoid
+  // // reallocation.
+  // private final MutableMeasure<Angle> m_rotation = mutable(Rotations.of(0));
+  // // Mutable holder for unit-safe linear velocity values, persisted to avoid
+  // // reallocation.
+  // private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RotationsPerSecond.of(0));
+  // private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+  //         // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+  //         new SysIdRoutine.Config( Volts.of(1).per(Seconds.of(1)), Volts.of(7), null,null),
+  //         new SysIdRoutine.Mechanism(
+  //                 // Tell SysId how to plumb the driving voltage to the motors.
+  //                 (Measure<Voltage> volts) -> {
+  //                     bottomMotor.setVoltage(volts.in(Volts));
+  //                     topMotor.setVoltage(volts.in(Volts));
+  //                 },
+  //                 // Tell SysId how to record a frame of data for each motor on the mechanism
+  //                 // being
+  //                 // characterized.
+  //                 log -> {
+  //                     // Record a frame for the wheel motor. 
+  //                     log.motor("bottom")
+  //                             .voltage(
+  //                                     m_appliedVoltage.mut_replace(
+  //                                             bottomMotor.get() * RobotController.getBatteryVoltage(), Volts))
+  //                             .angularPosition(m_rotation.mut_replace(bottomMotor.getPosition().getValueAsDouble(), Rotations))
+  //                             .angularVelocity(
+  //                                     m_velocity.mut_replace(bottomMotor.getVelocity().getValueAsDouble(), RadiansPerSecond));
+  //                     log.motor("top")
+  //                             .voltage(
+  //                                     m_appliedVoltage.mut_replace(
+  //                                             topMotor.get() * RobotController.getBatteryVoltage(), Volts))
+  //                             .angularPosition(m_rotation.mut_replace(topMotor.getPosition().getValueAsDouble(), Rotations))
+  //                             .angularVelocity(
+  //                                     m_velocity.mut_replace(topMotor.getVelocity().getValueAsDouble(), RadiansPerSecond));
 
-    //                 },
-    //                 // Tell SysId to make generated commands require this subsystem, suffix test
-    //                 // state in
-    //                 // WPILog with this subsystem's name ("LauncherRollers")
-    //                 this));
+  //                 },
+  //                 // Tell SysId to make generated commands require this subsystem, suffix test
+  //                 // state in
+  //                 // WPILog with this subsystem's name ("LauncherRollers")
+  //                 this));
 
-    // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    //     return m_sysIdRoutine.quasistatic(direction);
-    // }
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  //     return m_sysIdRoutine.quasistatic(direction);
+  // }
 
-    // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    //     return m_sysIdRoutine.dynamic(direction);
-    // }
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  //     return m_sysIdRoutine.dynamic(direction);
+  // }
 }

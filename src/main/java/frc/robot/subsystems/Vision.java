@@ -105,8 +105,8 @@ public class Vision extends SubsystemBase {
     
     @Override
     public void periodic() {
-        processCamera(backLeftCamera, BLPhotonEstimator);
-        processCamera(backRightCamera, BRPhotonEstimator);
+        //processCamera(backLeftCamera, BLPhotonEstimator);
+        //processCamera(backRightCamera, BRPhotonEstimator);
         processCamera(frontLeftCamera, FLPhotonEstimator);
         processCamera(frontRightCamera, FRPhotonEstimator);
     }
