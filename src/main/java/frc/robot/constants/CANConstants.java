@@ -9,8 +9,6 @@ public final class CANConstants {
     public static final String CANBUS_DRIVE = "Drive";
     public static final String CANBUS_AUX = "Aux.";
     
-    //a value of 0 represents that the variable has not been worked on
-
     public static final int FRONT_LEFT_STEER_MOTOR_ID = 2;
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 3;
     public static final int FRONT_LEFT_ENCODER_ID = 4;        

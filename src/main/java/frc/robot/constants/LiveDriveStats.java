@@ -4,9 +4,13 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
+import edu.wpi.first.math.geometry.Pose2d;
+
+/* See TroDocs for explanation on why this exists. */
 public final class LiveDriveStats {
     public static double OUTPUT_X = 0;
     public static double OUTPUT_Y = 0;
     public static double OUTPUT_H = 0;
+    public static Pose2d CURRENT_SHOOT_TARGET1 = new Pose2d();
+    public static Pose2d CURRENT_SHOOT_TARGET2 = new Pose2d();
 }

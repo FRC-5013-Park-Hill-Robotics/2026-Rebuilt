@@ -40,17 +40,17 @@ import edu.wpi.first.math.util.Units;
 public class VisionConstants {
         public static final String kBackLeftPhoton = "Back-Left";
         public static final String kBackRightPhoton = "Back-Right";
-        public static final String kFrontLeftPhoton = "Front-Left";
-        public static final String kFrontRightPhoton = "Front-Right";
+        public static final String kFrontLeftPhoton = "LeftFrontCamera";
+        public static final String kFrontRightPhoton = "RightFrontCamera";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kBLCamOffset =
                 new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
         public static final Transform3d kBRCamOffset =
                 new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
         public static final Transform3d kFLCamOffset =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(0.241, 0.241, 0.203), new Rotation3d(0, Math.toRadians(20), Math.toRadians(45)));
         public static final Transform3d kFRCamOffset =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(-0.241, 0.241, 0.203), new Rotation3d(0, Math.toRadians(20), Math.toRadians(-45)));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

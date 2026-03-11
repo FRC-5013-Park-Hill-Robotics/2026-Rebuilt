@@ -11,6 +11,10 @@ import frc.robot.trobot5013lib.LinearInterpolator;
 public final class LauncherConstants {
     public final static double INITIAL_SPEED_TOP = 0;
     public final static double INITIAL_SPEED_BOTTOM = 0;
+    public final static double INITIAL_SPEED_BACK = 0;
+
+    public final static double IDLE_SPEED_BACK = 50;
+    public final static double OUTTAKE_SPEED_BOTTOM = 0;
 
     public final static class RollerGains {
         public static final double kP = 0.5;

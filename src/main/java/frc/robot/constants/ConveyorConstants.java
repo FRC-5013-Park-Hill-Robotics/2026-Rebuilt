@@ -3,6 +3,8 @@ package frc.robot.constants;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ConveyorConstants {
+    public final static double RUNNING_SPEED = 40;
+
     public final static class RollerGains {
         public static final double kP = 0.010371;
         public static final double kI = 0;
