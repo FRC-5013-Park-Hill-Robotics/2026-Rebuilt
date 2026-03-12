@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.GamepadDrive;
-import frc.robot.commands.ShootBasedOffDistance;
-import frc.robot.commands.ShootFromZones;
+//import frc.robot.commands.ShootBasedOffDistance;
+//import frc.robot.commands.ShootFromZones;
 import frc.robot.commands.TurnToPose;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LiveDriveStats;
@@ -34,7 +34,7 @@ import frc.robot.subsystems.LauncherRollers;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.TurnToPose;
 import frc.robot.commands.Shuttle;
-import frc.robot.commands.TurnAndShootToTarget;
+//import frc.robot.commands.TurnAndShootToTarget;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -86,7 +86,7 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
-    mRollers.setDefaultCommand(new ShootFromZones(mDrivetrain, mRollers));
+    //mRollers.setDefaultCommand(new ShootFromZones(mDrivetrain, mRollers));
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
@@ -99,7 +99,7 @@ public class RobotContainer {
     mDriver.x().onTrue(mIntake.setTargetC(100))
      .onFalse(mIntake.setTargetC(0));
 
-    mDriver.b().whileTrue(new TurnAndShootToTarget(PoseConstants.RED_HUB, mDrivetrain, mRollers, mConveyor));
+    //mDriver.b().whileTrue(new TurnAndShootToTarget(PoseConstants.RED_HUB, mDrivetrain, mRollers, mConveyor));
 
     mDriver.a().onTrue(mRollers.toggleStopCommand());
 
