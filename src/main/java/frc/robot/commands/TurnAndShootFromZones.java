@@ -32,11 +32,10 @@ public class TurnAndShootFromZones extends Command {
   private Alliance m_alliance;
 
   public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
-    m_controllerH.enableContinuousInput(-Math.PI, Math.PI);
+    m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_Conveyor = conveyor;
-    addRequirements(drivetrain, rollers);
   }
 
   @Override
@@ -73,7 +72,7 @@ public class TurnAndShootFromZones extends Command {
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shooter
-    m_launcherRollers.setSpeedTop(data.rollerSpeed);
+    //m_launcherRollers.setSpeedTop(data.rollerSpeed);
 
     //Shoot if Aligned on Target
     boolean isAligned = Math.abs(m_controllerH.getPositionError()) < CommandConstants.ShootAngleTolerance;
@@ -93,6 +92,10 @@ public class TurnAndShootFromZones extends Command {
     SmartDashboard.putNumber("TASFZ: RollerSpeed", data.rollerSpeed);
   }
 
-  @Override public void end(boolean interrupted) { m_drivetrain.setControl(new SwerveRequest.Idle()); }
+  @Override public void end(boolean interrupted) {
+    m_Conveyor.setTarget(0);
+    m_launcherRollers.setSpeedBottom(0);
+  }
+  
   @Override public boolean isFinished() { return false; }
 }

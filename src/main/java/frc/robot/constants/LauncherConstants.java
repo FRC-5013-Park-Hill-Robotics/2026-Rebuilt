@@ -13,8 +13,8 @@ public final class LauncherConstants {
   public final static double INITIAL_SPEED_BOTTOM = 0;
   public final static double INITIAL_SPEED_BACK = 0;
 
-  public final static double IDLE_SPEED_BACK = 50;
-  public final static double OUTTAKE_SPEED_BOTTOM = 0;
+  public final static double IDLE_SPEED_BACK = 40;
+  public final static double OUTTAKE_SPEED_BOTTOM = 80;
 
   public final static double SHOOTER_HEIGHT_FROM_FLOOR = 0;
 
@@ -35,12 +35,16 @@ public final class LauncherConstants {
       {2,10,0},
       {3,15,0}
     };
-    //Initial velocity and angle for each shooterspeed
+    //Format: {RollerSpeed, Distance, TOF,  ExitVelocity}
     public static final double[][] SHOOTER_DATA = {
-      {2000, 2.0, 0.4, 10.0},
-      {2500, 4.0, 0.6, 12.0},
-      {3000, 6.0, 0.8, 15.0},
-      {3500, 8.0, 1.1, 18.0}
+      {4, 1.2319, 6.19, 10.0},
+      {8, 4.0, 0.6, 12.0},
+      {12, 6.0, 0.8, 15.0},
+      {16, 8.0, 1.1, 18.0},
+      {20, 8.0, 1.1, 18.0},
+      {24, 8.0, 1.1, 18.0},
+      {28, 8.0, 1.1, 18.0},
+      {32, 8.0, 1.1, 18.0},
     };
     public static final double AIR_DENSITY = 1.225; // kg/m^3
     public static final double DRAG_COEFFICIENT = 0.47; // For a ball

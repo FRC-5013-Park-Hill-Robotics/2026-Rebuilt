@@ -21,7 +21,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.commands.PrepareShooter;
 import frc.robot.commands.TurnToPose;
+import frc.robot.constants.ConveyorConstants;
 import frc.robot.constants.IntakeConstants;
+import frc.robot.constants.LauncherConstants;
 import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
 import frc.robot.constants.LauncherConstants.TargetConstants;
@@ -88,7 +90,8 @@ public class RobotContainer {
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
-    //mDriver.y().onTrue(mConveyor.setTargetC());
+    mDriver.y().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
+      .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
     mDriver.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
     mDriver.b().onTrue(mIntake.moveIntakeInC()); 
     mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
@@ -104,8 +107,8 @@ public class RobotContainer {
     mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
     mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
     
-    mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-4));
-    mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(4));
+    mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-5));
+    mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(5));
   }
  
   public void updateField(){

@@ -36,7 +36,7 @@ public class LauncherRollers extends SubsystemBase {
   private TalonFX OuttakeRB= new TalonFX(CANConstants.OUTTAKE_RB_ID, CANConstants.CANBUS_AUX);
   private TalonFX OuttakeBottom = new TalonFX(CANConstants.OUTTAKE_BOTTOM_ID, CANConstants.CANBUS_AUX);
   
-  private SlewRateLimiter m_BottomLimiter = new SlewRateLimiter(3);
+  private SlewRateLimiter m_BottomLimiter = new SlewRateLimiter(100);
   private VelocityVoltage m_BottomVoltage = new VelocityVoltage(0);
   private SlewRateLimiter m_TopLimiter = new SlewRateLimiter(10);
   private VelocityVoltage m_TopVoltage = new VelocityVoltage(0);
@@ -77,7 +77,7 @@ public class LauncherRollers extends SubsystemBase {
     m_TopVoltage.withSlot(0);
 
     TalonFXConfiguration topConfig2 = new TalonFXConfiguration();
-    topConfig2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    topConfig2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     topConfig2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     topConfig2.Slot0.kP = LauncherConstants.RollerGains.kP;
     topConfig2.Slot0.kI = LauncherConstants.RollerGains.kI;

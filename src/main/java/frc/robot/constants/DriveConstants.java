@@ -19,5 +19,5 @@ public class DriveConstants {
 
     public static final PIDController ControllerX = new PIDController(8, 0, 0);
     public static final PIDController ControllerY = new PIDController(8, 0, 0);
-    public static final PIDController ControllerH = new PIDController(0.3, 0, 0); //Error in Degrees
+    public static final PIDController ControllerH = new PIDController(0.05, 0, 0.008); //Error in Degrees, output in rotation rate
 }

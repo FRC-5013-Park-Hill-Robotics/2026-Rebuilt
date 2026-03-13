@@ -21,17 +21,13 @@ import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
 
 public class PrepareShooter extends Command {
-  private final PIDController m_controllerH = DriveConstants.ControllerH;
-  
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Alliance m_alliance;
 
   public PrepareShooter(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers) {
-    m_controllerH.enableContinuousInput(-Math.PI, Math.PI);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
-    addRequirements(drivetrain, rollers);
   }
 
   @Override
