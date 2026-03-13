@@ -8,17 +8,13 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.IntakeConstants;
-import frc.robot.constants.IntakeConstants.IntakeMoverGains;
 
 public class Intake extends SubsystemBase {
     private TalonFX intakeRollerMotor = new TalonFX(CANConstants.INTAKE_MAIN_ID, CANConstants.CANBUS_AUX);
@@ -32,6 +28,14 @@ public class Intake extends SubsystemBase {
     private int m_moverDirection = 1;
     private SlewRateLimiter m_moverlimiter = new SlewRateLimiter(5);
     private final Timer m_moverTimer = new Timer();
+    private Boolean m_runOnce = true;
+    private double m_HoldPosition = 0;
+
+    public enum IntakePosition{
+        In,
+        Out
+    }
+    private IntakePosition m_intakePosition = IntakePosition.In;
 
     public Intake() {
         super();
@@ -73,15 +77,21 @@ public class Intake extends SubsystemBase {
 
         // !hasElapsed so it only runs for moverIn/OutTime seconds
         if(m_moverDirection == -1 && !m_moverTimer.hasElapsed(IntakeConstants.moverInTime)){
-            m_MoverVelocityVoltage.withOutput(IntakeConstants.moveInVolt);
+            m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveInVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
         }
         else if(m_moverDirection == 1 && !m_moverTimer.hasElapsed(IntakeConstants.moverOutTime)){
-            m_MoverVelocityVoltage.withOutput(IntakeConstants.moveOutVolt);
+            m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveOutVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
         }
+        // //Hold when not moving
+        else if(m_runOnce){
+            m_runOnce = false;
+            //m_HoldPosition = intakeMoverMotor.getPosition().getValueAsDouble();
+        }
         else{
-            m_MoverVelocityVoltage.withOutput(0);
+            //intakeMoverMotor.setPosition(m_HoldPosition);
+            m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(0));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
         }
     }
@@ -111,11 +121,24 @@ public class Intake extends SubsystemBase {
     public void moveIntakeIn(){
         m_moverDirection = -1;
         m_moverTimer.reset();
+        m_intakePosition = IntakePosition.In;
+        m_runOnce = false;
     }
 
     public void moveIntakeOut(){
         m_moverDirection = 1;
         m_moverTimer.reset();
+        m_intakePosition = IntakePosition.Out;
+        m_runOnce = false;
+    }
+
+    public void toggleIntakePosition(){
+        if(m_intakePosition == IntakePosition.In){
+            moveIntakeOut();
+        }
+        else{
+            moveIntakeIn();
+        }
     }
     
     // Commands
