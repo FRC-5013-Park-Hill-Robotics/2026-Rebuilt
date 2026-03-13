@@ -145,9 +145,9 @@ public class LauncherRollers extends SubsystemBase {
   }
 
   // GENERAL METHODS
-  public double getSpeedFromDist(double distance) {
-    return LauncherConstants.TargetConstants.LAUNCHER_TY_SHOOTER_SPEED_INTERPOLATOR.getInterpolatedValue(distance);
-  } //No Command Attached
+  // public double getSpeedFromDist(double distance) {
+  //   return LauncherConstants.TargetConstants.getShooterSpeed(distance, 0);
+  // } //No Command Attached
 
   // GENERAL COMMANDS
   public void start() {

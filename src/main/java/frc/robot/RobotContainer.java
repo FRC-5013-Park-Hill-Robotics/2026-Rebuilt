@@ -19,8 +19,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.GamepadDrive;
-//import frc.robot.commands.ShootBasedOffDistance;
-//import frc.robot.commands.ShootFromZones;
+import frc.robot.commands.PrepareShooter;
 import frc.robot.commands.TurnToPose;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LiveDriveStats;
@@ -33,8 +32,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LauncherRollers;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.TurnToPose;
-import frc.robot.commands.Shuttle;
-//import frc.robot.commands.TurnAndShootToTarget;
+import frc.robot.commands.TurnAndShootFromZones;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -86,38 +84,28 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
-    //mRollers.setDefaultCommand(new ShootFromZones(mDrivetrain, mRollers));
+    //mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
    
-    mDriver.y().onTrue(mIntake.moveIntakeInC()); 
-    mDriver.b().onTrue(mIntake.moveIntakeOutC()); 
+    //mDriver.y().onTrue(mConveyor.setTargetC());
+    mDriver.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
+    mDriver.b().onTrue(mIntake.moveIntakeInC()); 
+    mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
 
-    // mDriver.y().onTrue(mRollers.stopCommand().alongWith(mConveyor.stopC())); 
-    // mDriver.start().onTrue(mRollers.startCommand());
-
-    mDriver.x().onTrue(mIntake.setTargetC(100))
+    mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed))
+     .onFalse(mIntake.setTargetC(0));
+    mDriver.rightBumper().onTrue(mIntake.setTargetC(IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
 
-    //mDriver.b().whileTrue(new TurnAndShootToTarget(PoseConstants.RED_HUB, mDrivetrain, mRollers, mConveyor));
+    mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor));
 
-    mDriver.a().onTrue(mRollers.toggleStopCommand());
 
-    // mDriver.b().onTrue(mRollers.setSpeedTopCommand(20)
-    //                       .andThen(mRollers.setSpeedBackCommand(20)));
-    // mDriver.a().onTrue(mRollers.setSpeedBottomCommand(15)
-    //                       .alongWith(mConveyor.setTargetC(30)));
-
-    // mDriver.leftBumper().whileTrue(new TurnToPose(PoseConstants.BLUE_HUB, mDrivetrain)); 
-    // mDriver.rightBumper().whileTrue(new TurnToPose(PoseConstants.RED_HUB, mDrivetrain)); 
-
-    // mDriver.rightStick().whileTrue(new Shuttle(mDrivetrain));
-
-    // mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
-    // mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
+    mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
+    mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
     
-    // mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-4));
-    // mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(4));
+    mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-4));
+    mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(4));
   }
  
   public void updateField(){
