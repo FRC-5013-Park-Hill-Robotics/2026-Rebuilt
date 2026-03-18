@@ -28,6 +28,8 @@ public class PrepareShooter extends Command {
   public PrepareShooter(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers) {
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
+
+    addRequirements(rollers);
   }
 
   @Override
@@ -56,12 +58,21 @@ public class PrepareShooter extends Command {
       }
     }
 
-    ShotData data = ShooterCalculator.calculateShot(state.Speeds.vxMetersPerSecond, state.Speeds.vyMetersPerSecond, currentPose, targetPose, LauncherConstants.TargetConstants.SHOOTER_DATA);
+    //ShotData data = ShooterCalculator.calculateShot(state.Speeds.vxMetersPerSecond, state.Speeds.vyMetersPerSecond, currentPose, targetPose, LauncherConstants.TargetConstants.SHOOTER_DATA);
     
-    // Rollers
-    m_launcherRollers.setSpeedTop(data.rollerSpeed);
+    double distToTarget = Math.hypot(targetPose.getX()-state.Pose.getX(), targetPose.getY()-state.Pose.getY());
+    double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(distToTarget);
+    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(distToTarget);
 
-    SmartDashboard.putNumber("PS: Shooter Speed", data.rollerSpeed);
+    // Rollers
+    if(LiveDriveStats.AUTO_SHOOTING){
+      m_launcherRollers.setSpeedTop(topShooterSpeed);
+      m_launcherRollers.setSpeedBack(backShooterSpeed);
+    }
+
+    SmartDashboard.putNumber("PS: Top Shooter Speed", topShooterSpeed);
+    SmartDashboard.putNumber("PS: Back Shooter Speed", backShooterSpeed);
+    LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
   }
 
   @Override public void end(boolean interrupted) {}

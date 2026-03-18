@@ -15,8 +15,10 @@ public class PoseConstants {
     public static final double X_BLUE_SHUTTLE_CUTOFF = 5;
     public static final double X_RED_SHUTTLE_CUTOFF = 11.5;
 
-    public static final Pose2d BLUE_HUB = new Pose2d(4.6, 1.8288, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED_HUB = new Pose2d(11.9, 1.8288, Rotation2d.fromDegrees(0));
+    public static final double HUB_HEIGHT = 1.8288; //In meters
+
+    public static final Pose2d BLUE_HUB = new Pose2d(4.6, 4, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_HUB = new Pose2d(11.9, 4, Rotation2d.fromDegrees(0));
 
     //From Driver Perspective
     public static final Pose2d BLUE_LEFT = new Pose2d(3.5, 5.750, Rotation2d.fromDegrees(0));

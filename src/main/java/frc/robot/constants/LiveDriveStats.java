@@ -11,6 +11,11 @@ public final class LiveDriveStats {
     public static double OUTPUT_X = 0;
     public static double OUTPUT_Y = 0;
     public static double OUTPUT_H = 0;
+
     public static Pose2d CURRENT_SHOOT_TARGET1 = new Pose2d();
     public static Pose2d CURRENT_SHOOT_TARGET2 = new Pose2d();
+
+    public static Pose2d DYNAMIC_SHOOT_TARGET = new Pose2d();
+
+    public static boolean AUTO_SHOOTING = true; //Enables/Disables some commands from setting shooter speed
 }
