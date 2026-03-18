@@ -36,6 +36,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.List;
@@ -49,20 +50,26 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-    private final PhotonCamera backLeftCamera;
-    private final PhotonCamera backRightCamera;
+    // private final PhotonCamera backLeftCamera;
+    // private final PhotonCamera backRightCamera;
+    private final PhotonCamera shooterCamera;
     private final PhotonCamera frontLeftCamera;
     private final PhotonCamera frontRightCamera;
-    private final PhotonPoseEstimator BLPhotonEstimator;
-    private final PhotonPoseEstimator BRPhotonEstimator;
+    // private final PhotonPoseEstimator BLPhotonEstimator;
+    // private final PhotonPoseEstimator BRPhotonEstimator;
+    private final PhotonPoseEstimator shooterPhotonEstimator;
     private final PhotonPoseEstimator FLPhotonEstimator;
     private final PhotonPoseEstimator FRPhotonEstimator;
     private Matrix<N3, N1> curStdDevs;
     private final CommandSwerveDrivetrain estConsumer;
 
     // Simulation
-    private PhotonCameraSim backCameraSim;
+    private PhotonCameraSim FLCameraSim;
+    private PhotonCameraSim FRCameraSim;
+    private PhotonCameraSim ShooterCameraSim;
     private VisionSystemSim visionSim;
+
+    private Boolean visionUpdatesEnabled = true;
 
     /**
      * @param estConsumer Lamba that will accept a pose estimate and pass it to your desired {@link
@@ -70,13 +77,11 @@ public class Vision extends SubsystemBase {
      */
     public Vision(CommandSwerveDrivetrain estConsumer) {
         this.estConsumer = estConsumer;
-        backLeftCamera = new PhotonCamera(VisionConstants.kBackLeftPhoton);
-        backRightCamera = new PhotonCamera(VisionConstants.kBackRightPhoton);
+        shooterCamera = new PhotonCamera(VisionConstants.kShooterPhoton);
         frontLeftCamera = new PhotonCamera(VisionConstants.kFrontLeftPhoton);
         frontRightCamera = new PhotonCamera(VisionConstants.kFrontRightPhoton);
 
-        BLPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kBLCamOffset);
-        BRPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kBRCamOffset);
+        shooterPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kShooterCamOffset);
         FLPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kFLCamOffset);
         FRPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kFRCamOffset);
 
@@ -95,20 +100,27 @@ public class Vision extends SubsystemBase {
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            backCameraSim = new PhotonCameraSim(backLeftCamera, cameraProp);
-            // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(backCameraSim, VisionConstants.kBLCamOffset);
+            ShooterCameraSim = new PhotonCameraSim(shooterCamera, cameraProp);
+            FLCameraSim = new PhotonCameraSim(frontLeftCamera, cameraProp);
+            FRCameraSim = new PhotonCameraSim(frontRightCamera, cameraProp);
 
-            backCameraSim.enableDrawWireframe(true);
+            // Add the simulated camera to view the targets on this simulated field.
+            visionSim.addCamera(ShooterCameraSim, VisionConstants.kShooterCamOffset);
+            visionSim.addCamera(FLCameraSim, VisionConstants.kFLCamOffset);
+            visionSim.addCamera(FRCameraSim, VisionConstants.kFRCamOffset);
+
+            //backCameraSim.enableDrawWireframe(true);
         }
     }
     
     @Override
     public void periodic() {
-        //processCamera(backLeftCamera, BLPhotonEstimator);
-        //processCamera(backRightCamera, BRPhotonEstimator);
-        processCamera(frontLeftCamera, FLPhotonEstimator);
-        processCamera(frontRightCamera, FRPhotonEstimator);
+        if(visionUpdatesEnabled){
+            processCamera(frontLeftCamera, FLPhotonEstimator);
+            processCamera(frontRightCamera, FRPhotonEstimator);
+            processCamera(shooterCamera, shooterPhotonEstimator);
+        }
+        SmartDashboard.putBoolean("Vision Enabled", visionUpdatesEnabled);
     }
 
     /**
@@ -119,7 +131,7 @@ public class Vision extends SubsystemBase {
      * @param targets All targets in this camera frame
      */
     private void updateEstimationStdDevs(
-            Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
+            Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets, PhotonPoseEstimator estimater) {
         if (estimatedPose.isEmpty()) {
             // No pose input. Default to single-tag std devs
             curStdDevs = VisionConstants.kSingleTagStdDevs;
@@ -132,7 +144,7 @@ public class Vision extends SubsystemBase {
 
             // Precalculation - see how many tags we found, and calculate an average-distance metric
             for (var tgt : targets) {
-                var tagPose = BLPhotonEstimator.getFieldTags().getTagPose(tgt.getFiducialId());
+                var tagPose = estimater.getFieldTags().getTagPose(tgt.getFiducialId());
                 if (tagPose.isEmpty()) continue;
                 numTags++;
                 avgDist +=
@@ -177,7 +189,7 @@ public class Vision extends SubsystemBase {
             if (visionEst.isEmpty()) {
                 visionEst = estimator.estimateLowestAmbiguityPose(result);
             }
-            updateEstimationStdDevs(visionEst, result.getTargets());
+            updateEstimationStdDevs(visionEst, result.getTargets(), estimator);
 
             if (Robot.isSimulation()) {
                 visionEst.ifPresentOrElse(
@@ -221,5 +233,14 @@ public class Vision extends SubsystemBase {
     @FunctionalInterface
     public static interface EstimateConsumer {
         public void accept(Pose2d pose, double timestamp, Matrix<N3, N1> estimationStdDevs);
+    }
+
+    // Commands
+    public void toggleVisionUpdates(){
+        visionUpdatesEnabled = !visionUpdatesEnabled;
+    }
+    public Command toggleVisionUpdatesC(){
+        Command result = runOnce(()->toggleVisionUpdates());
+        return result;
     }
 }

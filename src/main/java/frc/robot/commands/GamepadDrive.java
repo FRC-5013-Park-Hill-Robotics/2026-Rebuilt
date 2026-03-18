@@ -65,9 +65,9 @@ public class GamepadDrive extends Command {
 
 		double i = 1.0;
 
-		if(m_gamepad.getLeftTriggerAxis() > 0.5){
-			i = 0.5;
-		}
+		// if(m_gamepad.getLeftTriggerAxis() > 0.5){
+		// 	i = 0.5;
+		// }
 
 		LiveDriveStats.OUTPUT_X = translationX;
 		LiveDriveStats.OUTPUT_Y = translationY;
@@ -96,7 +96,7 @@ public class GamepadDrive extends Command {
 		// Deadband
 		value = MathUtil.applyDeadband(value, 0.1);
 
-		 value = Math.copySign(Math.pow(value, exponent), value);
+		value = Math.copySign(Math.pow(value, exponent), value);
 
 		return value;
 	}

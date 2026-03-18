@@ -13,6 +13,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.CANConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LauncherConstants;
+import frc.robot.constants.LiveDriveStats;
 
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Radians;
@@ -36,16 +38,22 @@ public class LauncherRollers extends SubsystemBase {
   private TalonFX OuttakeRB= new TalonFX(CANConstants.OUTTAKE_RB_ID, CANConstants.CANBUS_AUX);
   private TalonFX OuttakeBottom = new TalonFX(CANConstants.OUTTAKE_BOTTOM_ID, CANConstants.CANBUS_AUX);
   
-  private SlewRateLimiter m_BottomLimiter = new SlewRateLimiter(100);
+  private SlewRateLimiter m_BottomLimiter = new SlewRateLimiter(300);
   private VelocityVoltage m_BottomVoltage = new VelocityVoltage(0);
-  private SlewRateLimiter m_TopLimiter = new SlewRateLimiter(10);
+
+  private SlewRateLimiter m_TopLimiter = new SlewRateLimiter(80);
   private VelocityVoltage m_TopVoltage = new VelocityVoltage(0);
-  private SlewRateLimiter m_BackLimiter = new SlewRateLimiter(10);
+
+  private SlewRateLimiter m_BackLimiter = new SlewRateLimiter(300);
   private VelocityVoltage m_BackVoltage = new VelocityVoltage(0);
+
   private double goalSpeedBottom = 0;
   private double goalSpeedTop = 0;
   private double goalSpeedBack = 0;
   private boolean STOP = false;
+
+  private boolean RevWheels = false; //When outtaking, spin up wheels a little bit
+  private Timer RevTimer;
 
   public LauncherRollers() {
     TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
@@ -74,10 +82,9 @@ public class LauncherRollers extends SubsystemBase {
     OuttakeRB.set(0);
     OuttakeRT.getConfigurator().apply(topConfig1);
     OuttakeRB.getConfigurator().apply(topConfig1);
-    m_TopVoltage.withSlot(0);
 
     TalonFXConfiguration topConfig2 = new TalonFXConfiguration();
-    topConfig2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    topConfig2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     topConfig2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     topConfig2.Slot0.kP = LauncherConstants.RollerGains.kP;
     topConfig2.Slot0.kI = LauncherConstants.RollerGains.kI;
@@ -101,6 +108,9 @@ public class LauncherRollers extends SubsystemBase {
     OuttakeLB.set(0);
     OuttakeLB.getConfigurator().apply(backConfig);
     m_BottomVoltage.withSlot(0);
+
+    RevTimer.start();
+
     this.start();
   }
 
@@ -120,6 +130,16 @@ public class LauncherRollers extends SubsystemBase {
       OuttakeLB.setControl(m_BackVoltage);
     }
 
+    if(RevWheels && !RevTimer.hasElapsed(LauncherConstants.REV_TIME)){
+      m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop+LauncherConstants.REV_OFFSET));
+      OuttakeLT.setControl(m_TopVoltage);
+      OuttakeRB.setControl(m_TopVoltage);
+      OuttakeRT.setControl(m_TopVoltage);
+
+      m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack+LauncherConstants.REV_OFFSET));
+      OuttakeLB.setControl(m_BackVoltage);
+    }
+
     if(goalSpeedBottom == 0){
       OuttakeBottom.setVoltage(0);
     }
@@ -132,16 +152,18 @@ public class LauncherRollers extends SubsystemBase {
       OuttakeLB.setVoltage(0);
     }
     
-    SmartDashboard.putNumber("Outtake LT Speed", OuttakeLT.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake RB Speed", OuttakeRB.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake RT Speed", OuttakeRT.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake Top Goal", goalSpeedTop);
+    SmartDashboard.putNumber("Outtake: LT Speed", OuttakeLT.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake: RB Speed", OuttakeRB.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake: RT Speed", OuttakeRT.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Outtake: Top Goal", goalSpeedTop);
 
-    SmartDashboard.putNumber("Outtake Bottom Speed", OuttakeBottom.getVelocity().getValueAsDouble()); 
-    SmartDashboard.putNumber("Outtake Bottom Goal", goalSpeedBottom);  
+    SmartDashboard.putNumber("Outtake: Bottom Speed", OuttakeBottom.getVelocity().getValueAsDouble()); 
+    SmartDashboard.putNumber("Outtake: Bottom Goal", goalSpeedBottom);  
 
-    SmartDashboard.putNumber("Outake LB Speed", OuttakeLB.getVelocity().getValueAsDouble()); 
-    SmartDashboard.putNumber("Outtake Back Goal", goalSpeedBack);  
+    SmartDashboard.putNumber("Outake: LB Speed", OuttakeLB.getVelocity().getValueAsDouble()); 
+    SmartDashboard.putNumber("Outtake: Back Goal", goalSpeedBack);
+    
+    SmartDashboard.putBoolean("Outtake: Running", !STOP);
   }
 
   // GENERAL METHODS
@@ -171,6 +193,15 @@ public class LauncherRollers extends SubsystemBase {
     this.goalSpeedBack = 0;
   } 
 
+  public void setSpeeds(double SpeedTop, double SpeedBack){
+    goalSpeedTop = SpeedTop;
+    goalSpeedBack = SpeedBack;
+  }
+
+  public void toggleAutoShooting(){
+    LiveDriveStats.AUTO_SHOOTING = !LiveDriveStats.AUTO_SHOOTING;
+  }
+
   public Command startCommand(){
     Command result = runOnce(this::start);
     return result;
@@ -182,9 +213,21 @@ public class LauncherRollers extends SubsystemBase {
   }
 
   public Command toggleStopCommand(){
-  Command result = runOnce(this::toggleStopLauncher);
-  return result;
+    Command result = runOnce(this::toggleStopLauncher);
+    return result;
   }
+
+  public Command setSpeedsCommand(double SpeedTop, double SpeedBack){
+    Command result = runOnce(()->setSpeeds(SpeedTop, SpeedBack));
+    return result;
+  }
+
+  public Command toggleAutoShootingCommand(){
+    Command result = runOnce(()->toggleAutoShooting());
+    return result;
+  }
+
+  //public Command setSpeedCommand( SpeedTop,)
 
   // TOP ROLLER METHODS
   public void incrementSpeedTop(double rpsChange) {
@@ -215,6 +258,12 @@ public class LauncherRollers extends SubsystemBase {
     this.goalSpeedBottom += rpsChange;
   }
 
+  public void outtake(){
+    this.goalSpeedBottom = LauncherConstants.OUTTAKE_SPEED_BOTTOM;
+    RevWheels = true;
+    RevTimer.reset();
+  }
+
   public Command incrementSpeedBottomCommand(double rpsChange){
     Command result = runOnce(()-> incrementSpeedBottom(rpsChange));
     return result;
@@ -222,6 +271,11 @@ public class LauncherRollers extends SubsystemBase {
   
   public Command setSpeedBottomCommand(double rps){
     Command result = runOnce(()-> setSpeedBottom(rps));
+    return result;
+  } 
+
+  public Command outtakeCommand(){
+    Command result = runOnce(()-> outtake());
     return result;
   } 
 

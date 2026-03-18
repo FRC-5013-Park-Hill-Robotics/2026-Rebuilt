@@ -6,9 +6,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.ConveyorConstants;
@@ -22,18 +26,17 @@ import frc.robot.subsystems.LauncherRollers;
 import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
 
-public class TurnAndShootFromZones extends Command {
+public class DynamicShootToGround extends Command {
   private final PIDController m_controllerH = DriveConstants.ControllerH;
   private final Debouncer m_aimDebouncer = new Debouncer(0.1);
 
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Conveyor m_conveyor;
-  private Alliance m_alliance;
 
   private boolean m_runonce = true;
 
-  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
+  public DynamicShootToGround(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
@@ -42,29 +45,13 @@ public class TurnAndShootFromZones extends Command {
 
   @Override
   public void initialize() {
-    m_alliance = RobotContainer.getAlliance();
   }
 
   @Override
   public void execute() {
     SwerveDriveState state = m_drivetrain.getState();
     Pose2d currentPose = state.Pose;
-    Pose2d targetPose;
-
-    // 1. Zone logic
-    if (m_alliance == Alliance.Blue) {
-      if (currentPose.getX() < PoseConstants.X_BLUE_SHUTTLE_CUTOFF) {
-        targetPose = PoseConstants.BLUE_HUB;
-      } else {
-        targetPose = currentPose.nearest(PoseConstants.BLUE_SHUTTLE_POSES);
-      }
-    } else { 
-      if (currentPose.getX() > PoseConstants.X_RED_SHUTTLE_CUTOFF) {
-        targetPose = PoseConstants.RED_HUB;
-      } else {
-        targetPose = currentPose.nearest(PoseConstants.RED_SHUTTLE_POSES);
-      }
-    }
+    Pose2d targetPose = LiveDriveStats.DYNAMIC_SHOOT_TARGET;
     
     // 1. Calculate the vector to the target
     double dx = targetPose.getX() - currentPose.getX();
@@ -91,9 +78,6 @@ public class TurnAndShootFromZones extends Command {
     // Adjust heading error based on sideways drift
     double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
-    // 6. Calculate Shooter Speed and Heading with offsets
-    double bottomShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
-
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
     // Add the lead compensation
@@ -105,7 +89,13 @@ public class TurnAndShootFromZones extends Command {
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shooter
-    //m_launcherRollers.setSpeedBottom(bottomShooterSpeed);
+    if(LiveDriveStats.AUTO_SHOOTING){
+      double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(adjustedDist);
+      double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+
+      m_launcherRollers.setSpeedTop(topShooterSpeed);
+      m_launcherRollers.setSpeedBack(backShooterSpeed);
+    }
 
     //Shoot if Aligned on Target
     boolean isAligned = m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
@@ -126,10 +116,10 @@ public class TurnAndShootFromZones extends Command {
 
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
-    SmartDashboard.putNumber("TASFZ: Distance to Hub", distToTarget);
-    SmartDashboard.putBoolean("TASFZ: Ready to Shoot", m_aimDebouncer.calculate(isAligned));
-    SmartDashboard.putNumber("TASFZ: Output H", outputH);
-    SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
+    SmartDashboard.putNumber("DSTG: Distance to Hub", distToTarget);
+    SmartDashboard.putBoolean("DSTG: Ready to Shoot", m_aimDebouncer.calculate(isAligned));
+    SmartDashboard.putNumber("DSTG: Output H", outputH);
+    SmartDashboard.putNumber("DSTG: Heading Error", headingError);
   }
 
   @Override public void end(boolean interrupted) {

@@ -48,7 +48,7 @@ public class TurnToPose extends Command {
     SmartDashboard.putNumber("PoseErrorX", ErrorX);
     SmartDashboard.putNumber("PoseErrorY", ErrorY);
 
-    double OutputH = MathUtil.clamp(ControllerH.calculate(ErrorH), -DriveConstants.MaxAngularRate, DriveConstants.MaxAngularRate);
+    double OutputH = MathUtil.clamp(ControllerH.calculate(ErrorH), -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
 
     SmartDashboard.putNumber("PoseOutputH", OutputH);
 

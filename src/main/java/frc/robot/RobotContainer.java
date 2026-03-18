@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.DynamicShootToGround;
+import frc.robot.commands.DynamicTargetPose;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.commands.PrepareShooter;
 import frc.robot.commands.TurnToPose;
@@ -45,6 +48,7 @@ import frc.robot.commands.TurnAndShootFromZones;
 public class RobotContainer {
 
   private final CommandXboxController mDriver = new CommandXboxController(0);
+  private final CommandXboxController mOpperator = new CommandXboxController(1);
   public final CommandSwerveDrivetrain mDrivetrain = TunerConstants.createDrivetrain();
 
   public final Intake mIntake = new Intake();
@@ -86,15 +90,16 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
-    //mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
+    mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
+    mDriver.start().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
    
     mDriver.y().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
-    mDriver.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
-    mDriver.b().onTrue(mIntake.moveIntakeInC()); 
-    mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
+    mDriver.x().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor));
+    mDriver.a().onTrue(mIntake.toggleIntakePositionC()); 
+    mDriver.b().onTrue(mIntake.aggitateIntakeC()); 
 
     mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
@@ -102,13 +107,21 @@ public class RobotContainer {
      .onFalse(mIntake.setTargetC(0));
 
     mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor));
-
-
-    mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(4));
-    mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-4));
     
-    mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-5));
-    mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(5));
+    // mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(1));
+    // mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-1));
+    
+    // mDriver.povLeft().onTrue(mRollers.incrementSpeedBackCommand(-1));
+    // mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(1));
+
+    mOpperator.leftTrigger().whileTrue(mRollers.setSpeedsCommand(LauncherConstants.SOLID_POSITION_TOP, LauncherConstants.SOLID_POSITION_BACK));
+    mOpperator.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.outtakeCommand()))
+      .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
+
+    mOpperator.a().whileTrue(new DynamicTargetPose(mOpperator));
+    mOpperator.b().onTrue(camera.toggleVisionUpdatesC());
+    mOpperator.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
+    mOpperator.y().onTrue(mRollers.toggleAutoShootingCommand());
   }
  
   public void updateField(){
@@ -116,7 +129,7 @@ public class RobotContainer {
     m_field.setRobotPose(i);
 
     FieldObject2d targets = m_field.getObject("Targets");
-    targets.setPoses(LiveDriveStats.CURRENT_SHOOT_TARGET1);
+    targets.setPoses(LiveDriveStats.CURRENT_SHOOT_TARGET1, LiveDriveStats.DYNAMIC_SHOOT_TARGET);
 
     SmartDashboard.putNumber("BotX", mDrivetrain.getState().Pose.getX());
     SmartDashboard.putNumber("BotY", mDrivetrain.getState().Pose.getY());
@@ -125,10 +138,6 @@ public class RobotContainer {
 
 
   public void configureAutonomousCommands() {
-    // WaitCommand wait025 = new WaitCommand(0.25);
-    // NamedCommands.registerCommand("Wait0.25", wait025);
-
-  
     WaitCommand wait5 = new WaitCommand(0.5);
     NamedCommands.registerCommand("Wait0.5", wait5);
 
@@ -137,6 +146,21 @@ public class RobotContainer {
 
     WaitCommand wait15 = new WaitCommand(1.5);
     NamedCommands.registerCommand("Wait1.5", wait15);
+
+    // Command shootCommand = mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM));
+    // NamedCommands.registerCommand("Shoot", shootCommand);
+
+    // Command shootstopCommand = mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0));
+    // NamedCommands.registerCommand("ShootStop", shootstopCommand);
+
+    // Command intakedownCommand = mIntake.moveIntakeOutC();
+    // NamedCommands.registerCommand("IntakeDown", intakedownCommand);
+
+    // Command intakeCommand = mIntake.setTargetC(IntakeConstants.intakeSpeed);
+    // NamedCommands.registerCommand("Intake", intakeCommand);
+
+    // Command intakestopCommand = mIntake.setTargetC(0);
+    // NamedCommands.registerCommand("IntakeStop", intakestopCommand);
   }
   
   public Command getAutonomousCommand() {
