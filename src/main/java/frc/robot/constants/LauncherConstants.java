@@ -20,12 +20,12 @@ public final class LauncherConstants {
   public final static double SOLID_POSITION_BACK = 26;
 
   public final static double REV_TIME = 0.1;
-  public final static double REV_OFFSET = 2;
+  public final static double REV_OFFSET = 0.5;
 
   public final static class RollerGains {
     public static final double kP = 0.5;
     public static final double kI = 0;
-    public static final double kD = 0.0001;
+    public static final double kD = 0.001;
     public static final double kF = 0;
     public static final double kS = 0.39545;
     public static final double kV = 0.12212;
@@ -36,7 +36,7 @@ public final class LauncherConstants {
     public static final double distCoefficient = 0; //How velocity effects dist
     public static final double leadCoefficient = 0; //Degrees of lead per m/s
     //distance from hub and shooter speed in rps
-    //Front
+    //Front, added 1 to all
     public static final double[][] SHOOTER_HUB_DATA1 = {
       {1.9752, 50},
       {2.3242, 51},
@@ -54,14 +54,14 @@ public final class LauncherConstants {
       // {3.1150,74},
       // {3.7284,80},
     };
-    //Back
+    //Back, added 1 to all
     public static final double[][] SHOOTER_HUB_DATA2 = {
       {1.9752, 20},
       {2.3242 ,21},
       {2.5399, 23},
       {2.8627, 24},
       {3.1603, 26},
-      {3.8657, 26},
+      {3.8657, 27},
       {10, 35}
       // {1.9137,17},
       // {2.0623,20},

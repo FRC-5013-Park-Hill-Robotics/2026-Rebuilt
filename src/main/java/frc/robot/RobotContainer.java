@@ -38,6 +38,7 @@ import frc.robot.subsystems.LauncherRollers;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.TurnToPose;
 import frc.robot.commands.TurnAndShootFromZones;
+import frc.robot.commands.TurnAndShootFromZonesForAuto;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -107,6 +108,8 @@ public class RobotContainer {
      .onFalse(mIntake.setTargetC(0));
 
     mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor));
+    mDriver.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
+      .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
     
     // mDriver.povUp().onTrue(mRollers.incrementSpeedTopCommand(1));
     // mDriver.povDown().onTrue(mRollers.incrementSpeedTopCommand(-1));
@@ -125,6 +128,8 @@ public class RobotContainer {
   }
  
   public void updateField(){
+    SmartDashboard.putBoolean("Auto Shooting Enabled", LiveDriveStats.AUTO_SHOOTING);
+
     Pose2d i = mDrivetrain.getState().Pose;
     m_field.setRobotPose(i);
 
@@ -147,24 +152,26 @@ public class RobotContainer {
     WaitCommand wait15 = new WaitCommand(1.5);
     NamedCommands.registerCommand("Wait1.5", wait15);
 
+    WaitCommand wait4 = new WaitCommand(4);
+    NamedCommands.registerCommand("Wait4", wait4);
+
     // Command shootCommand = mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM));
     // NamedCommands.registerCommand("Shoot", shootCommand);
 
     // Command shootstopCommand = mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0));
-    // NamedCommands.registerCommand("ShootStop", shootstopCommand);
+    // NamedCommands.registerCom mand("ShootStop", shootstopCommand);
 
-    // Command intakedownCommand = mIntake.moveIntakeOutC();
-    // NamedCommands.registerCommand("IntakeDown", intakedownCommand);
+    NamedCommands.registerCommand("IntakeDownA", mIntake.moveIntakeOutC());
+    NamedCommands.registerCommand("IntakeUp", mIntake.moveIntakeInC());
+    NamedCommands.registerCommand("Intake", mIntake.setTargetC(IntakeConstants.intakeSpeed));
+    NamedCommands.registerCommand("IntakeStop", mIntake.setTargetC(0));
 
-    // Command intakeCommand = mIntake.setTargetC(IntakeConstants.intakeSpeed);
-    // NamedCommands.registerCommand("Intake", intakeCommand);
-
-    // Command intakestopCommand = mIntake.setTargetC(0);
-    // NamedCommands.registerCommand("IntakeStop", intakestopCommand);
+    NamedCommands.registerCommand("Lock and Shoot 4 Sec", new TurnAndShootFromZonesForAuto(mDrivetrain, mRollers, mConveyor, 4));
+  
+    NamedCommands.registerCommand("Prepare Shooter", new PrepareShooter(mDrivetrain, mRollers));
   }
   
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
 
@@ -176,7 +183,6 @@ public class RobotContainer {
     return mAlliance;
   }
   
-
   public static RobotContainer getInstance(){
 		return instance;
 	}

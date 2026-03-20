@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.38165492957549807,
-        "y": 0.633750000005973
+        "x": 7.507,
+        "y": 1.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.381654929575498,
-        "y": 0.633750000005973
+        "x": 6.755863247863249,
+        "y": 1.0367094017094018
       },
       "isLocked": false,
-      "linkedName": "HP_Load"
+      "linkedName": "Right End Hairpin"
     },
     {
       "anchor": {
-        "x": 2.7928697183098596,
-        "y": 2.885281690140845
+        "x": 5.75,
+        "y": 2.4
       },
       "prevControl": {
-        "x": 2.3936619718309866,
-        "y": 2.0708978873239436
+        "x": 6.486017094017094,
+        "y": 2.3559572649572647
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Over Bump End"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 37.234833981574724
+    "velocity": 3.0,
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.62959860833529
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

@@ -5,22 +5,27 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Middle-MoveBack"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
-                }
-              }
-            ]
+            "pathName": "Middle-MoveBack"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare Shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait1.5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lock and Shoot 4 Sec"
           }
         }
       ]

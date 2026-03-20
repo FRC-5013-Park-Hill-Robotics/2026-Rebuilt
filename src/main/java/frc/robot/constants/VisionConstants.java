@@ -38,6 +38,9 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
+
+        public static final double kPoseAmbiguity = 0.25; //Pose Ambiguity Bar
+
         public static final String kShooterPhoton = "ShooterCamera";
         public static final String kFrontLeftPhoton = "LeftFrontCamera";
         public static final String kFrontRightPhoton = "RightFrontCamera";

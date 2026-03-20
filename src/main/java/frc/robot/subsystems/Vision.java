@@ -166,7 +166,7 @@ public class Vision extends SubsystemBase {
                 // Increase std devs based on (average) distance
                 if (numTags == 1 && avgDist > 4)
                     estStdDevs = VecBuilder.fill(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 30));
+                else estStdDevs = estStdDevs.times(1 + (avgDist * avgDist / 10));
                 curStdDevs = estStdDevs;
             }
         }
@@ -185,6 +185,14 @@ public class Vision extends SubsystemBase {
     public void processCamera(PhotonCamera cam, PhotonPoseEstimator estimator){
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         for (var result : cam.getAllUnreadResults()) {
+            // Only process if we have targets
+            if (!result.hasTargets()) continue;
+
+            var bestTarget = result.getBestTarget();
+            
+            // --- AMBIGUITY FILTER ---
+            if (bestTarget.getPoseAmbiguity() > VisionConstants.kPoseAmbiguity) continue;
+
             visionEst = estimator.estimateCoprocMultiTagPose(result);
             if (visionEst.isEmpty()) {
                 visionEst = estimator.estimateLowestAmbiguityPose(result);
