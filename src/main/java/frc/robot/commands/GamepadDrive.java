@@ -47,8 +47,8 @@ public class GamepadDrive extends Command {
 
 		double throttle = 1;//modifyAxis(m_gamepad.getRightTriggerAxis());
 
-		double translationX = modifyAxis(-m_gamepad.getLeftY());
-		double translationY = modifyAxis(-m_gamepad.getLeftX());
+		double translationX = xLimiter.calculate(modifyAxis(-m_gamepad.getLeftY()));
+		double translationY = yLimiter.calculate(modifyAxis(-m_gamepad.getLeftX()));
 		double translationH = rotationLimiter.calculate(m_gamepad.getRightX());
 		
 		if(!(translationX == 0.0 && translationY == 0.0)) {

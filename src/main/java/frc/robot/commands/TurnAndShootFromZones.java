@@ -93,7 +93,7 @@ public class TurnAndShootFromZones extends Command {
     double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
     // 6. Calculate Shooter Speed and Heading with offsets
-    double bottomShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
@@ -105,17 +105,15 @@ public class TurnAndShootFromZones extends Command {
     outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
     LiveDriveStats.OUTPUT_H = outputH;
 
-    //Shooter
-    //m_launcherRollers.setSpeedBottom(bottomShooterSpeed);
-
     //Shoot if Aligned on Target
     boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);//m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
-        
+        m_launcherRollers.setSpeedBack(backShooterSpeed);
+
         if(m_runonce){
-          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
+          m_launcherRollers.outtake();
           m_runonce = false;
         }
       }
@@ -137,6 +135,7 @@ public class TurnAndShootFromZones extends Command {
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
     m_launcherRollers.setSpeedBottom(0);
+    m_launcherRollers.setSpeedBack(0);
   }
 
   @Override public boolean isFinished() { return false; }

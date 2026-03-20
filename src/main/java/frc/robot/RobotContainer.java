@@ -99,8 +99,9 @@ public class RobotContainer {
     mDriver.y().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
     mDriver.x().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor));
-    mDriver.a().onTrue(mIntake.toggleIntakePositionC()); 
-    mDriver.b().onTrue(mIntake.aggitateIntakeC()); 
+    // mDriver.a().onTrue(mIntake.toggleIntakePositionC()); 
+    mDriver.b().onTrue(mIntake.moveIntakeInC()); 
+    mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
 
     mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));

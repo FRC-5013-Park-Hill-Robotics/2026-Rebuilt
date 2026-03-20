@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.75,
-        "y": 5.6
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.337834507042254,
-        "y": 5.5394190140845065
+        "y": 5.439419014084507
       },
       "isLocked": false,
       "linkedName": "Left Over Bump End"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CANConstants;
@@ -21,6 +22,7 @@ public class Conveyor extends SubsystemBase {
   
   private TalonFX ConveyorMotor = new TalonFX(CANConstants.INTAKE_LEFT_ID, CANConstants.CANBUS_AUX);
   
+  private SlewRateLimiter m_Limiter = new SlewRateLimiter(160);
   private VelocityVoltage m_Voltage = new VelocityVoltage(0);
   private double goalSpeed = 0;
 
@@ -35,6 +37,7 @@ public class Conveyor extends SubsystemBase {
     Config.Slot0.kS = ConveyorConstants.RollerGains.kS;
     Config.Slot0.kV = ConveyorConstants.RollerGains.kV;
     Config.Slot0.kA = ConveyorConstants.RollerGains.kA;
+    Config.CurrentLimits.StatorCurrentLimit = 20;
     ConveyorMotor.set(0);
     ConveyorMotor.getConfigurator().apply(Config);
     m_Voltage.withSlot(0);
@@ -42,7 +45,7 @@ public class Conveyor extends SubsystemBase {
 
   @Override
   public void periodic() {
-    m_Voltage.withVelocity(goalSpeed);
+    m_Voltage.withVelocity(m_Limiter.calculate(goalSpeed));
     ConveyorMotor.setControl(m_Voltage);
   }
 

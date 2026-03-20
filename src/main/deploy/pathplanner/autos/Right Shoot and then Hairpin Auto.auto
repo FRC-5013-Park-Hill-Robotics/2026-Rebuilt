@@ -1,0 +1,127 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Start to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lock and Shoot 4 Sec"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Shoot to Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Over Bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDownA"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Ready to Sweep"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Hairpin Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Hairpin End to Bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Back Over Bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare Shooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Start to Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare Shooter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lock and Shoot 4 Sec"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Shoot to Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Over Bump"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Right",
+  "choreoAuto": false
+}

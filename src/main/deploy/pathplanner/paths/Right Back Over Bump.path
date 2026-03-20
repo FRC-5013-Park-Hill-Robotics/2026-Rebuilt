@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 5.75,
-        "y": 2.4
+        "y": 2.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.9585151228353164,
-        "y": 2.395139827357635
+        "y": 2.4951398273576353
       },
       "isLocked": false,
       "linkedName": "Right Over Bump End"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 3.67,
-        "y": 2.4
+        "y": 2.5
       },
       "prevControl": {
         "x": 4.850731201604945,
-        "y": 2.4037699538009627
+        "y": 2.503769953800963
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,

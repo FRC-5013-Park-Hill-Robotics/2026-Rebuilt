@@ -118,7 +118,7 @@ public class Vision extends SubsystemBase {
         if(visionUpdatesEnabled){
             processCamera(frontLeftCamera, FLPhotonEstimator);
             processCamera(frontRightCamera, FRPhotonEstimator);
-            processCamera(shooterCamera, shooterPhotonEstimator);
+            //processCamera(shooterCamera, shooterPhotonEstimator);
         }
         SmartDashboard.putBoolean("Vision Enabled", visionUpdatesEnabled);
     }
@@ -215,7 +215,7 @@ public class Vision extends SubsystemBase {
                         // Change our trust in the measurement based on the tags we can see
                         var estStdDevs = getEstimationStdDevs();
 
-                        estConsumer.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                        estConsumer.addVisionMeasurement(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs.times(2));
                     });
             SmartDashboard.putNumber("Stuff", result.getTimestampSeconds());
         }
