@@ -24,10 +24,10 @@ public class Intake extends SubsystemBase {
 
     private VelocityVoltage m_IntakeVelocityVoltage = new VelocityVoltage(0);
     private double target = 0;
-    private SlewRateLimiter m_intakelimiter = new SlewRateLimiter(400);
-    
-    private VoltageOut m_MoverVelocityVoltage = new VoltageOut(0);
+    private SlewRateLimiter m_intakeWheelLimiter = new SlewRateLimiter(400);
     private SlewRateLimiter m_moverlimiter = new SlewRateLimiter(5);
+
+    private VoltageOut m_MoverVelocityVoltage = new VoltageOut(0);
     private final Timer m_moverTimer = new Timer();
     private double m_HoldPosition = 0;
 
@@ -41,6 +41,7 @@ public class Intake extends SubsystemBase {
         Out
     }
     private IntakeState m_intakePosition = IntakeState.In;
+    private double mTest = 0;
 
     public Intake() {
         super();
@@ -53,7 +54,7 @@ public class Intake extends SubsystemBase {
         config.Slot0.kS = IntakeConstants.RollerGains.kS;
         config.Slot0.kV = IntakeConstants.RollerGains.kV;
         config.Slot0.kA = IntakeConstants.RollerGains.kA;
-        config.CurrentLimits.StatorCurrentLimit = 40;
+        config.CurrentLimits.StatorCurrentLimit = 20;
         intakeRollerMotor.getConfigurator().apply(config);
         intakeRollerMotor.set(0);
 
@@ -66,7 +67,7 @@ public class Intake extends SubsystemBase {
         config2.Slot0.kS = IntakeConstants.IntakeMoverGains.kS;
         config2.Slot0.kV = IntakeConstants.IntakeMoverGains.kV;
         config2.Slot0.kA = IntakeConstants.IntakeMoverGains.kA;
-        config2.CurrentLimits.StatorCurrentLimit = 40;
+        config2.CurrentLimits.StatorCurrentLimit = 20;
         intakeMoverMotor.getConfigurator().apply(config2);
         intakeMoverMotor.set(0);
 
@@ -79,15 +80,18 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_IntakeVelocityVoltage.withVelocity(m_intakelimiter.calculate(target));
+        m_IntakeVelocityVoltage.withVelocity(m_intakeWheelLimiter.calculate(target));
         intakeRollerMotor.setControl(m_IntakeVelocityVoltage);
 
         double intakePos = intakeMoverMotor.getPosition().getValueAsDouble();
         double intakeTime = intakeMoverMotor.getPosition().getTimestamp().getTime();
 
+        String state = "Null";
+
         MoveOutAoT.addMessurement(intakePos, intakeTime);
         // !hasElapsed so it only runs for moverIn/OutTime seconds
         if(m_intakePosition == IntakeState.TowardsOut){
+            state = "Towards Out";
             m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveOutVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
@@ -96,6 +100,7 @@ public class Intake extends SubsystemBase {
             }
         }
         if(m_intakePosition == IntakeState.TowardsIn){
+            state = "Towards In";
             m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveInVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
@@ -104,6 +109,7 @@ public class Intake extends SubsystemBase {
             }
         }
         if(m_intakePosition == IntakeState.Aggitate){
+            state = "Aggitating";
             m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveInVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
@@ -113,16 +119,22 @@ public class Intake extends SubsystemBase {
             }
         }
         if(m_intakePosition == IntakeState.In){
+            state = "In";
             m_MoverVelocityVoltage.withOutput(0);
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
         }
         if(m_intakePosition == IntakeState.Out){
+            state = "Out";
             m_MoverVelocityVoltage.withOutput(0);
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
         }
 
         // m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(intakeMoverMotor.getPosition().getValueAsDouble()-m_HoldPosition));
         // intakeMoverMotor.setControl(m_MoverVelocityVoltage);
+
+        SmartDashboard.putString("Intake: Intake State", state);
+
+        SmartDashboard.putNumber("Intake: Intake Test", mTest);
 
         SmartDashboard.putNumber("Intake: Mover Current AoT", MoveOutAoT.getAverage(intakeMoverMotor.getPosition().getTimestamp().getTime()));
         SmartDashboard.putNumber("Intake: Mover Hold Position", m_HoldPosition);
@@ -158,6 +170,7 @@ public class Intake extends SubsystemBase {
 
     public void moveIntakeOut(){
         m_moverTimer.reset();
+        mTest++;
         m_intakePosition = IntakeState.TowardsOut;
     }
 
@@ -167,10 +180,10 @@ public class Intake extends SubsystemBase {
     }
 
     public void toggleIntakePosition(){
-        if(m_intakePosition == IntakeState.In){
+        if(m_intakePosition == IntakeState.In /*|| m_intakePosition == IntakeState.TowardsIn*/){
             moveIntakeOut();
         }
-        if(m_intakePosition == IntakeState.Out){
+        if(m_intakePosition == IntakeState.Out || m_intakePosition == IntakeState.TowardsOut){
             moveIntakeIn();
         }
     }

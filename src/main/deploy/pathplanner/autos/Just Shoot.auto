@@ -5,15 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Middle-MoveBack"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Wait1.5"
+            "waitTime": 3.0
           }
         },
         {
@@ -25,13 +19,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Wait1.5"
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

@@ -130,15 +130,15 @@ public class LauncherRollers extends SubsystemBase {
       OuttakeLB.setControl(m_BackVoltage);
     }
 
-    if(RevWheels && !RevTimer.hasElapsed(LauncherConstants.REV_TIME)){
-      m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop+LauncherConstants.REV_OFFSET));
-      OuttakeLT.setControl(m_TopVoltage);
-      OuttakeRB.setControl(m_TopVoltage);
-      OuttakeRT.setControl(m_TopVoltage);
+    // if(RevWheels && !RevTimer.hasElapsed(LauncherConstants.REV_TIME)){
+    //   m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop+LauncherConstants.REV_OFFSET));
+    //   OuttakeLT.setControl(m_TopVoltage);
+    //   OuttakeRB.setControl(m_TopVoltage);
+    //   OuttakeRT.setControl(m_TopVoltage);
 
-      m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack+LauncherConstants.REV_OFFSET));
-      OuttakeLB.setControl(m_BackVoltage);
-    }
+    //   m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack+LauncherConstants.REV_OFFSET));
+    //   OuttakeLB.setControl(m_BackVoltage);
+    // }
 
     if(goalSpeedBottom == 0){
       OuttakeBottom.setVoltage(0);

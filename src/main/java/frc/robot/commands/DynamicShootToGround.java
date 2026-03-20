@@ -89,10 +89,10 @@ public class DynamicShootToGround extends Command {
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shooter
-    if(LiveDriveStats.AUTO_SHOOTING){
-      double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(adjustedDist);
-      double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+    double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(adjustedDist);
+    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
+    if(LiveDriveStats.AUTO_SHOOTING){
       m_launcherRollers.setSpeedTop(topShooterSpeed);
       m_launcherRollers.setSpeedBack(backShooterSpeed);
     }
@@ -102,6 +102,8 @@ public class DynamicShootToGround extends Command {
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
+        m_launcherRollers.setSpeedBack(backShooterSpeed);
+
         if(m_runonce){
           m_launcherRollers.outtake();
           m_runonce = false;
@@ -125,6 +127,7 @@ public class DynamicShootToGround extends Command {
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
     m_launcherRollers.setSpeedBottom(0);
+     m_launcherRollers.setSpeedBack(0);
   }
 
   @Override public boolean isFinished() { return false; }

@@ -97,7 +97,7 @@ public class TurnAndShootFromZonesForAuto extends Command {
     double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
     // 6. Calculate Shooter Speed and Heading with offsets
-    double bottomShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
@@ -117,6 +117,8 @@ public class TurnAndShootFromZonesForAuto extends Command {
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
+        m_launcherRollers.setSpeedBack(backShooterSpeed);
+
         if(m_runonce){
           m_launcherRollers.outtake();
           m_runonce = false;
@@ -140,9 +142,10 @@ public class TurnAndShootFromZonesForAuto extends Command {
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
     m_launcherRollers.setSpeedBottom(0);
+    m_launcherRollers.setSpeedBack(0);
   }
 
   @Override public boolean isFinished() { 
-    return m_Timer.hasElapsed(m_shootTime); 
+    return !m_Timer.hasElapsed(m_shootTime); 
   }
 }

@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.67,
-        "y": 5.6
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.208045774647888,
-        "y": 5.555387323943662
+        "y": 5.455387323943662
       },
       "isLocked": false,
       "linkedName": "Left Startpoint"
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -39.4885225839794
+    "rotation": -39.48852258397941
   },
   "reversed": false,
   "folder": "Left Sequence",

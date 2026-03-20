@@ -67,7 +67,7 @@ public class PrepareShooter extends Command {
     // Rollers
     if(LiveDriveStats.AUTO_SHOOTING){
       m_launcherRollers.setSpeedTop(topShooterSpeed);
-      m_launcherRollers.setSpeedBack(backShooterSpeed);
+      //m_launcherRollers.setSpeedBack(backShooterSpeed);
     }
 
     SmartDashboard.putNumber("PS: Top Shooter Speed", topShooterSpeed);
