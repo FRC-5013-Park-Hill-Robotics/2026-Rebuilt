@@ -22,7 +22,7 @@ public class GamepadDrive extends Command {
 	private CommandXboxController m_gamepad;
 	private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
 	private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
-	private SlewRateLimiter rotationLimiter = new SlewRateLimiter(3);
+	private SlewRateLimiter rotationLimiter = new SlewRateLimiter(10);
 
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(DriveConstants.MaxSpeed * 0.1).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.1) // Add a 10% deadband
@@ -45,11 +45,11 @@ public class GamepadDrive extends Command {
 	@Override
 	public void execute() {
 
-		double throttle = modifyAxis(m_gamepad.getRightTriggerAxis());
+		double throttle = 1;//modifyAxis(m_gamepad.getRightTriggerAxis());
 
 		double translationX = modifyAxis(-m_gamepad.getLeftY());
 		double translationY = modifyAxis(-m_gamepad.getLeftX());
-		double translationH = rotationLimiter.calculate(m_gamepad.getRightX()*0.75);
+		double translationH = rotationLimiter.calculate(m_gamepad.getRightX());
 		
 		if(!(translationX == 0.0 && translationY == 0.0)) {
 			double angle = calculateTranslationDirection(translationX, translationY);
@@ -62,12 +62,6 @@ public class GamepadDrive extends Command {
 			translationY = translationY/3;
 			translationH = translationH/2;
 		}
-
-		double i = 1.0;
-
-		// if(m_gamepad.getLeftTriggerAxis() > 0.5){
-		// 	i = 0.5;
-		// }
 
 		LiveDriveStats.OUTPUT_X = translationX;
 		LiveDriveStats.OUTPUT_Y = translationY;
@@ -82,7 +76,7 @@ public class GamepadDrive extends Command {
 		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
 		SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
 		SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
-	 }
+	}
 
 	@Override
 	public void end(boolean interrupted) {
@@ -90,8 +84,9 @@ public class GamepadDrive extends Command {
 	}
 
 	private static double modifyAxis(double value) {
-		return modifyAxis(value, 1);
+		return modifyAxis(value, 2);
 	}
+	
 	private static double modifyAxis(double value, int exponent) {
 		// Deadband
 		value = MathUtil.applyDeadband(value, 0.1);

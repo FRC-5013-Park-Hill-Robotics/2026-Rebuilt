@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,7 +23,7 @@ import frc.robot.subsystems.LauncherRollers;
 import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
 
-public class TurnAndShootFromZones extends Command {
+public class TurnAndShootFromZonesForAuto extends Command {
   private final PIDController m_controllerH = DriveConstants.ControllerH;
   private final Debouncer m_aimDebouncer = new Debouncer(0.1);
 
@@ -31,9 +32,12 @@ public class TurnAndShootFromZones extends Command {
   private Conveyor m_conveyor;
   private Alliance m_alliance;
 
+  private double m_shootTime;
+  private Timer m_Timer = new Timer();
+  
   private boolean m_runonce = true;
 
-  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
+  public TurnAndShootFromZonesForAuto(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, double ShootTime) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
@@ -43,7 +47,7 @@ public class TurnAndShootFromZones extends Command {
   @Override
   public void initialize() {
     m_alliance = RobotContainer.getAlliance();
-    m_runonce = true;
+    m_Timer.reset();
   }
 
   @Override
@@ -109,13 +113,12 @@ public class TurnAndShootFromZones extends Command {
     //m_launcherRollers.setSpeedBottom(bottomShooterSpeed);
 
     //Shoot if Aligned on Target
-    boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);//m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
+    boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
-        
         if(m_runonce){
-          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
+          m_launcherRollers.outtake();
           m_runonce = false;
         }
       }
@@ -139,5 +142,7 @@ public class TurnAndShootFromZones extends Command {
     m_launcherRollers.setSpeedBottom(0);
   }
 
-  @Override public boolean isFinished() { return false; }
+  @Override public boolean isFinished() { 
+    return m_Timer.hasElapsed(m_shootTime); 
+  }
 }

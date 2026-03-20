@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.38165492957549807,
-        "y": 0.633750000005973
+        "x": 3.67,
+        "y": 5.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.381654929575498,
-        "y": 0.633750000005973
+        "x": 3.208045774647888,
+        "y": 5.555387323943662
       },
       "isLocked": false,
-      "linkedName": "HP_Load"
+      "linkedName": "Left Startpoint"
     },
     {
       "anchor": {
-        "x": 2.7928697183098596,
-        "y": 2.885281690140845
+        "x": 2.5373767605633812,
+        "y": 5.520052816901409
       },
       "prevControl": {
-        "x": 2.3936619718309866,
-        "y": 2.0708978873239436
+        "x": 2.9525528169014095,
+        "y": 5.823450704225352
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Shooting Position"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 37.234833981574724
+    "rotation": -39.4885225839794
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.62959860833529
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

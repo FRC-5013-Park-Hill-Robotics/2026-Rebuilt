@@ -82,7 +82,7 @@ public class TunerConstants {
 
     private static final double kDriveGearRatio = 5.357142857142857;
     private static final double kSteerGearRatio = 21.428571428571427;
-    private static final Distance kWheelRadius = Inches.of(2*(76.5/78.7)); //Functional Wheel Radius b/c tires suck
+    private static final Distance kWheelRadius = Inches.of(2.0102015122794592455266940237876); //Original 2in, functional Wheel Radius b/c tires suck
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;

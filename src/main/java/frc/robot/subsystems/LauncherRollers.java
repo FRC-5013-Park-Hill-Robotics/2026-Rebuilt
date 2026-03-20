@@ -53,7 +53,7 @@ public class LauncherRollers extends SubsystemBase {
   private boolean STOP = false;
 
   private boolean RevWheels = false; //When outtaking, spin up wheels a little bit
-  private Timer RevTimer;
+  private Timer RevTimer = new Timer();
 
   public LauncherRollers() {
     TalonFXConfiguration bottomConfig = new TalonFXConfiguration();

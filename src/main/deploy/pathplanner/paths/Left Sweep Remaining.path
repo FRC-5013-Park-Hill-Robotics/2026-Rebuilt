@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.38165492957549807,
-        "y": 0.633750000005973
+        "x": 5.75,
+        "y": 5.6
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.381654929575498,
-        "y": 0.633750000005973
+        "x": 6.75,
+        "y": 5.6
       },
       "isLocked": false,
-      "linkedName": "HP_Load"
+      "linkedName": "Left Over Bump End"
     },
     {
       "anchor": {
-        "x": 2.7928697183098596,
-        "y": 2.885281690140845
+        "x": 5.778943661971832,
+        "y": 0.8573063380281689
       },
       "prevControl": {
-        "x": 2.3936619718309866,
-        "y": 2.0708978873239436
+        "x": 5.619260563380283,
+        "y": 5.16875
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 37.234833981574724
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Left Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.62959860833529
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.38165492957549807,
-        "y": 0.633750000005973
+        "x": 5.75,
+        "y": 2.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.381654929575498,
-        "y": 0.633750000005973
+        "x": 6.75,
+        "y": 2.4000000000000004
       },
       "isLocked": false,
-      "linkedName": "HP_Load"
+      "linkedName": "Right Over Bump End"
     },
     {
       "anchor": {
-        "x": 2.7928697183098596,
-        "y": 2.885281690140845
+        "x": 8.25,
+        "y": 1.2
       },
       "prevControl": {
-        "x": 2.3936619718309866,
-        "y": 2.0708978873239436
+        "x": 7.200083298980793,
+        "y": -0.5022558329819127
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Center of Field"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 37.234833981574724
+    "velocity": 1.0,
+    "rotation": -82.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.62959860833529
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }
