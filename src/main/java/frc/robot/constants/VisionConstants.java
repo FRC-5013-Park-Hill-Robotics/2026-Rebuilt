@@ -47,11 +47,11 @@ public class VisionConstants {
         
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kShooterCamOffset =
-                new Transform3d(new Translation3d(0.0, 0.3429, 0.50165), new Rotation3d(0, Math.toRadians(33.695), 0));
+                new Transform3d(new Translation3d(0.3429, 0, 0.489), new Rotation3d(0, Math.toRadians(33), 0));
         public static final Transform3d kFLCamOffset =
                 new Transform3d(new Translation3d(0.254, 0.254, 0.19685), new Rotation3d(0, Math.toRadians(20), Math.toRadians(45)));
         public static final Transform3d kFRCamOffset =
-                new Transform3d(new Translation3d(-0.254, 0.254, 0.19685), new Rotation3d(0, Math.toRadians(20), Math.toRadians(-45)));
+                new Transform3d(new Translation3d(0.254, -0.254, 0.19685), new Rotation3d(0, Math.toRadians(20), Math.toRadians(-45)));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

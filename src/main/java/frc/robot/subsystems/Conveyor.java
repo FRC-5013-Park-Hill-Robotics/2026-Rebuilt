@@ -38,6 +38,7 @@ public class Conveyor extends SubsystemBase {
     Config.Slot0.kV = ConveyorConstants.RollerGains.kV;
     Config.Slot0.kA = ConveyorConstants.RollerGains.kA;
     Config.CurrentLimits.StatorCurrentLimit = 20;
+    Config.CurrentLimits.SupplyCurrentLimit = 20;
     ConveyorMotor.set(0);
     ConveyorMotor.getConfigurator().apply(Config);
     m_Voltage.withSlot(0);

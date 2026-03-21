@@ -6,9 +6,11 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.ConveyorConstants;
@@ -29,15 +31,17 @@ public class TurnAndShootFromZones extends Command {
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Conveyor m_conveyor;
+  private CommandXboxController m_controller;
   private Alliance m_alliance;
 
   private boolean m_runonce = true;
 
-  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
+  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, CommandXboxController driverController) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
+    m_controller = driverController;
   }
 
   @Override
@@ -90,7 +94,7 @@ public class TurnAndShootFromZones extends Command {
     double adjustedDist = distToTarget - (velocityTowardsTarget * LauncherConstants.TargetConstants.distCoefficient);
 
     // Adjust heading error based on sideways drift
-    double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
+    double headingLead = 0;//m_controller.getRightX()*3;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
     // 6. Calculate Shooter Speed and Heading with offsets
     double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
@@ -113,7 +117,7 @@ public class TurnAndShootFromZones extends Command {
         m_launcherRollers.setSpeedBack(backShooterSpeed);
 
         if(m_runonce){
-          m_launcherRollers.outtake();
+          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
           m_runonce = false;
         }
       }

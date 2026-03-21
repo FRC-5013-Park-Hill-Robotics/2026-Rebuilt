@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -59,12 +61,14 @@ public class LauncherRollers extends SubsystemBase {
     TalonFXConfiguration bottomConfig = new TalonFXConfiguration();
     bottomConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     bottomConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    bottomConfig.Slot0.kP = LauncherConstants.RollerGains.kP;
-    bottomConfig.Slot0.kI = LauncherConstants.RollerGains.kI;
-    bottomConfig.Slot0.kD = LauncherConstants.RollerGains.kD;
-    bottomConfig.Slot0.kS = LauncherConstants.RollerGains.kS;
-    bottomConfig.Slot0.kV = LauncherConstants.RollerGains.kV;
-    bottomConfig.Slot0.kA = LauncherConstants.RollerGains.kA;
+    bottomConfig.Slot0.kP = LauncherConstants.BottomRollerGains.kP;
+    bottomConfig.Slot0.kI = LauncherConstants.BottomRollerGains.kI;
+    bottomConfig.Slot0.kD = LauncherConstants.BottomRollerGains.kD;
+    bottomConfig.Slot0.kS = LauncherConstants.BottomRollerGains.kS;
+    bottomConfig.Slot0.kV = LauncherConstants.BottomRollerGains.kV;
+    bottomConfig.Slot0.kA = LauncherConstants.BottomRollerGains.kA;
+    bottomConfig.CurrentLimits.StatorCurrentLimit = 50;
+    bottomConfig.CurrentLimits.SupplyCurrentLimit = 40;
     OuttakeBottom.set(0);
     OuttakeBottom.getConfigurator().apply(bottomConfig);
     m_BottomVoltage.withSlot(0);
@@ -72,26 +76,32 @@ public class LauncherRollers extends SubsystemBase {
     TalonFXConfiguration topConfig1 = new TalonFXConfiguration();
     topConfig1.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     topConfig1.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topConfig1.Slot0.kP = LauncherConstants.RollerGains.kP;
-    topConfig1.Slot0.kI = LauncherConstants.RollerGains.kI;
-    topConfig1.Slot0.kD = LauncherConstants.RollerGains.kD;
-    topConfig1.Slot0.kS = LauncherConstants.RollerGains.kS;
-    topConfig1.Slot0.kV = LauncherConstants.RollerGains.kV;
-    topConfig1.Slot0.kA = LauncherConstants.RollerGains.kA;
+    topConfig1.Slot0.kP = LauncherConstants.TopRollerGains.kP;
+    topConfig1.Slot0.kI = LauncherConstants.TopRollerGains.kI;
+    topConfig1.Slot0.kD = LauncherConstants.TopRollerGains.kD;
+    topConfig1.Slot0.kS = LauncherConstants.TopRollerGains.kS;
+    topConfig1.Slot0.kV = LauncherConstants.TopRollerGains.kV;
+    topConfig1.Slot0.kA = LauncherConstants.TopRollerGains.kA;
+    topConfig1.CurrentLimits.StatorCurrentLimit = 60;
+    topConfig1.CurrentLimits.SupplyCurrentLimit = 40;
     OuttakeRT.set(0);
     OuttakeRB.set(0);
     OuttakeRT.getConfigurator().apply(topConfig1);
     OuttakeRB.getConfigurator().apply(topConfig1);
+    OuttakeRT.setControl(new Follower(CANConstants.OUTTAKE_LT_ID, MotorAlignmentValue.Opposed));
+    OuttakeRB.setControl(new Follower(CANConstants.OUTTAKE_LT_ID, MotorAlignmentValue.Opposed));
 
     TalonFXConfiguration topConfig2 = new TalonFXConfiguration();
     topConfig2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     topConfig2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topConfig2.Slot0.kP = LauncherConstants.RollerGains.kP;
-    topConfig2.Slot0.kI = LauncherConstants.RollerGains.kI;
-    topConfig2.Slot0.kD = LauncherConstants.RollerGains.kD;
-    topConfig2.Slot0.kS = LauncherConstants.RollerGains.kS;
-    topConfig2.Slot0.kV = LauncherConstants.RollerGains.kV;
-    topConfig2.Slot0.kA = LauncherConstants.RollerGains.kA;
+    topConfig2.Slot0.kP = LauncherConstants.TopRollerGains.kP;
+    topConfig2.Slot0.kI = LauncherConstants.TopRollerGains.kI;
+    topConfig2.Slot0.kD = LauncherConstants.TopRollerGains.kD;
+    topConfig2.Slot0.kS = LauncherConstants.TopRollerGains.kS;
+    topConfig2.Slot0.kV = LauncherConstants.TopRollerGains.kV;
+    topConfig2.Slot0.kA = LauncherConstants.TopRollerGains.kA;
+    topConfig2.CurrentLimits.StatorCurrentLimit = 60;
+    topConfig2.CurrentLimits.SupplyCurrentLimit = 40;
     OuttakeLT.set(0);
     OuttakeLT.getConfigurator().apply(topConfig2);
     m_TopVoltage.withSlot(0);
@@ -99,12 +109,13 @@ public class LauncherRollers extends SubsystemBase {
     TalonFXConfiguration backConfig = new TalonFXConfiguration();
     backConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     backConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    backConfig.Slot0.kP = LauncherConstants.RollerGains.kP;
-    backConfig.Slot0.kI = LauncherConstants.RollerGains.kI;
-    backConfig.Slot0.kD = LauncherConstants.RollerGains.kD;
-    backConfig.Slot0.kS = LauncherConstants.RollerGains.kS;
-    backConfig.Slot0.kV = LauncherConstants.RollerGains.kV;
-    backConfig.Slot0.kA = LauncherConstants.RollerGains.kA;
+    backConfig.Slot0.kP = LauncherConstants.BackRollerGains.kP;
+    backConfig.Slot0.kI = LauncherConstants.BackRollerGains.kI;
+    backConfig.Slot0.kD = LauncherConstants.BackRollerGains.kD;
+    backConfig.Slot0.kS = LauncherConstants.BackRollerGains.kS;
+    backConfig.Slot0.kV = LauncherConstants.BackRollerGains.kV;
+    backConfig.Slot0.kA = LauncherConstants.BackRollerGains.kA;
+    backConfig.Voltage.PeakForwardVoltage = 12.0;
     OuttakeLB.set(0);
     OuttakeLB.getConfigurator().apply(backConfig);
     m_BottomVoltage.withSlot(0);
@@ -123,8 +134,9 @@ public class LauncherRollers extends SubsystemBase {
     
       m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop));
       OuttakeLT.setControl(m_TopVoltage);
-      OuttakeRB.setControl(m_TopVoltage);
-      OuttakeRT.setControl(m_TopVoltage);
+      // Followers
+      // OuttakeRB.setControl(m_TopVoltage);
+      // OuttakeRT.setControl(m_TopVoltage);
 
       m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack));
       OuttakeLB.setControl(m_BackVoltage);

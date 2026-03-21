@@ -118,7 +118,7 @@ public class Vision extends SubsystemBase {
         if(visionUpdatesEnabled){
             processCamera(frontLeftCamera, FLPhotonEstimator);
             processCamera(frontRightCamera, FRPhotonEstimator);
-            //processCamera(shooterCamera, shooterPhotonEstimator);
+            processCamera(shooterCamera, shooterPhotonEstimator);
         }
         SmartDashboard.putBoolean("Vision Enabled", visionUpdatesEnabled);
     }

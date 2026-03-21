@@ -24,6 +24,7 @@ import frc.robot.commands.DynamicTargetPose;
 import frc.robot.commands.GamepadDrive;
 import frc.robot.commands.PrepareShooter;
 import frc.robot.commands.TurnToPose;
+import frc.robot.commands.UnlimitedGamepadDrive;
 import frc.robot.constants.ConveyorConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LauncherConstants;
@@ -89,7 +90,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
+    mDrivetrain.setDefaultCommand(new UnlimitedGamepadDrive(mDriver));
 
     mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
 
@@ -108,7 +109,7 @@ public class RobotContainer {
     mDriver.rightBumper().onTrue(mIntake.setTargetC(IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
 
-    mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor));
+    mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor, mDriver));
     mDriver.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
     
@@ -119,7 +120,7 @@ public class RobotContainer {
     // mDriver.povRight().onTrue(mRollers.incrementSpeedBackCommand(1));
 
     mOpperator.leftTrigger().whileTrue(mRollers.setSpeedsCommand(LauncherConstants.SOLID_POSITION_TOP, LauncherConstants.SOLID_POSITION_BACK));
-    mOpperator.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.outtakeCommand()))
+    mOpperator.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
 
     mOpperator.a().whileTrue(new DynamicTargetPose(mOpperator));
@@ -166,6 +167,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeUp", mIntake.moveIntakeInC());
     NamedCommands.registerCommand("Intake", mIntake.setTargetC(IntakeConstants.intakeSpeed));
     NamedCommands.registerCommand("IntakeStop", mIntake.setTargetC(0));
+
+    // NamedCommands.registerCommand("Const. Wheel Speed", new TurnAndShootFromZonesForAuto(mDrivetrain, mRollers, mConveyor, 4));
+    // Command shootCommand = mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM));
+    // NamedCommands.registerCommand("Shoot", shootCommand);
 
     NamedCommands.registerCommand("Lock and Shoot 4 Sec", new TurnAndShootFromZonesForAuto(mDrivetrain, mRollers, mConveyor, 4));
   

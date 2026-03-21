@@ -54,7 +54,8 @@ public class Intake extends SubsystemBase {
         config.Slot0.kS = IntakeConstants.RollerGains.kS;
         config.Slot0.kV = IntakeConstants.RollerGains.kV;
         config.Slot0.kA = IntakeConstants.RollerGains.kA;
-        config.CurrentLimits.StatorCurrentLimit = 20;
+        config.CurrentLimits.StatorCurrentLimit = 80;
+        config.CurrentLimits.SupplyCurrentLimit = 60;
         intakeRollerMotor.getConfigurator().apply(config);
         intakeRollerMotor.set(0);
 
@@ -67,7 +68,8 @@ public class Intake extends SubsystemBase {
         config2.Slot0.kS = IntakeConstants.IntakeMoverGains.kS;
         config2.Slot0.kV = IntakeConstants.IntakeMoverGains.kV;
         config2.Slot0.kA = IntakeConstants.IntakeMoverGains.kA;
-        config2.CurrentLimits.StatorCurrentLimit = 20;
+        config2.CurrentLimits.StatorCurrentLimit = 60;
+        config2.CurrentLimits.SupplyCurrentLimit = 40;
         intakeMoverMotor.getConfigurator().apply(config2);
         intakeMoverMotor.set(0);
 

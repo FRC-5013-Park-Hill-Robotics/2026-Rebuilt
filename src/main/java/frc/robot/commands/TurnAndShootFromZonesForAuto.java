@@ -42,6 +42,7 @@ public class TurnAndShootFromZonesForAuto extends Command {
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
+    m_shootTime = ShootTime;
   }
 
   @Override
@@ -120,7 +121,7 @@ public class TurnAndShootFromZonesForAuto extends Command {
         m_launcherRollers.setSpeedBack(backShooterSpeed);
 
         if(m_runonce){
-          m_launcherRollers.outtake();
+          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
           m_runonce = false;
         }
       }
@@ -133,10 +134,10 @@ public class TurnAndShootFromZonesForAuto extends Command {
 
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
-    SmartDashboard.putNumber("TASFZ: Distance to Hub", distToTarget);
-    SmartDashboard.putBoolean("TASFZ: Ready to Shoot", isAligned);
-    SmartDashboard.putNumber("TASFZ: Output H", outputH);
-    SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
+    SmartDashboard.putNumber("TASFZFA: Distance to Hub", distToTarget);
+    SmartDashboard.putBoolean("TASFZFA: Ready to Shoot", isAligned);
+    SmartDashboard.putNumber("TASFZFA: Output H", outputH);
+    SmartDashboard.putNumber("TASFZFA: Heading Error", headingError);
   }
 
   @Override public void end(boolean interrupted) {
@@ -146,6 +147,6 @@ public class TurnAndShootFromZonesForAuto extends Command {
   }
 
   @Override public boolean isFinished() { 
-    return !m_Timer.hasElapsed(m_shootTime); 
+    return m_Timer.hasElapsed(m_shootTime); 
   }
 }

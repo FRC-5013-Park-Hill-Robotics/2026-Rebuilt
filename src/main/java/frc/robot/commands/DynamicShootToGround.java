@@ -105,7 +105,7 @@ public class DynamicShootToGround extends Command {
         m_launcherRollers.setSpeedBack(backShooterSpeed);
 
         if(m_runonce){
-          m_launcherRollers.outtake();
+          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
           m_runonce = false;
         }
       }
