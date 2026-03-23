@@ -21,10 +21,10 @@ public class PoseConstants {
     public static final Pose2d RED_HUB = new Pose2d(11.9, 4, Rotation2d.fromDegrees(0));
 
     //From Driver Perspective
-    public static final Pose2d BLUE_LEFT = new Pose2d(3.5, 5.750, Rotation2d.fromDegrees(0));
-    public static final Pose2d BLUE_RIGHT = new Pose2d(3.5, 2.250, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED_LEFT = new Pose2d(13, 2.250, Rotation2d.fromDegrees(0));
-    public static final Pose2d RED_RIGHT = new Pose2d(13, 5.750, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_LEFT = new Pose2d(2.5, 5.750, Rotation2d.fromDegrees(0));
+    public static final Pose2d BLUE_RIGHT = new Pose2d(2.5, 2.250, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_LEFT = new Pose2d(14, 2.250, Rotation2d.fromDegrees(0));
+    public static final Pose2d RED_RIGHT = new Pose2d(14, 5.750, Rotation2d.fromDegrees(0));
 
     public static final List<Pose2d> BLUE_SHUTTLE_POSES = new ArrayList<Pose2d>(Arrays.asList(BLUE_LEFT, BLUE_RIGHT));
     public static final List<Pose2d> RED_SHUTTLE_POSES = new ArrayList<Pose2d>(Arrays.asList(RED_LEFT, RED_RIGHT));

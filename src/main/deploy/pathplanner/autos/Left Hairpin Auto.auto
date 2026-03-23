@@ -35,12 +35,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Left Hairpin End to Bump"
@@ -71,27 +65,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Wait0.5"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Prepare Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lock and Shoot 4 Sec"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Wait4"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
           }
         },
         {

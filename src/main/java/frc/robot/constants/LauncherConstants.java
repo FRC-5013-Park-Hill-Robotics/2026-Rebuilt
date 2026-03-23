@@ -16,21 +16,42 @@ public final class LauncherConstants {
   public final static double OUTTAKE_SPEED_BOTTOM = 80;
   public final static double SHOOTER_HEIGHT_FROM_FLOOR = 0;
 
-  public final static double SOLID_POSITION_TOP = 66;
-  public final static double SOLID_POSITION_BACK = 26;
+  public final static double SOLID_POSITION_TOP = 55;
+  public final static double SOLID_POSITION_BACK = 24;
 
   public final static double REV_TIME = 0.05;
   public final static double REV_OFFSET = 0.2;
 
-  public final static class RollerGains {
-    public static final double kP = 0.5;
+  public final static class TopRollerGains {
+    public static final double kP = 0.3;
     public static final double kI = 0;
-    public static final double kD = 0.001;
+    public static final double kD = 0.04;
     public static final double kF = 0;
     public static final double kS = 0.39545;
     public static final double kV = 0.12212;
     public static final double kA = 0.0046099;
   }
+
+  public final static class BackRollerGains {
+    public static final double kP = 0.3;
+    public static final double kI = 0;
+    public static final double kD = 0.04;
+    public static final double kF = 0;
+    public static final double kS = 0.39545;
+    public static final double kV = 0.12212;
+    public static final double kA = 0.0046099;
+  }
+
+  public final static class BottomRollerGains {
+    public static final double kP = 0.3;
+    public static final double kI = 0;
+    public static final double kD = 0.04;
+    public static final double kF = 0;
+    public static final double kS = 0.39545;
+    public static final double kV = 0.12212;
+    public static final double kA = 0.0046099;
+  }
+  
   public static final class TargetConstants{
     
     public static final double distCoefficient = 0; //How velocity effects dist
@@ -38,13 +59,13 @@ public final class LauncherConstants {
     //distance from hub and shooter speed in rps
     //Front, added 0 to all
     public static final double[][] SHOOTER_HUB_DATA1 = {
-      {1.9752, 50},
+      {1.9752, 52},
       {2.3242, 51},
       {2.5399, 54},
       {2.8627, 55},
       {3.1603, 58},
       {3.8657, 59},
-      {10, 75}
+      {10, 85}
       // {1.9137,48},
       // {2.0623,50},
       // {2.1633,55},
@@ -54,15 +75,15 @@ public final class LauncherConstants {
       // {3.1150,74},
       // {3.7284,80},
     };
-    //Back, added 0 to all
+    //Back, added 0.5 to all
     public static final double[][] SHOOTER_HUB_DATA2 = {
       {1.9752, 20},
-      {2.3242 ,21},
+      {2.3242, 21},
       {2.5399, 23},
       {2.8627, 24},
       {3.1603, 26}, 
       {3.8657, 27},
-      {10, 35}
+      {10, 50}
       // {1.9137,17},
       // {2.0623,20},
       // {2.1633,21},

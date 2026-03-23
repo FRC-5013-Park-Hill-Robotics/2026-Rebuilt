@@ -12,7 +12,7 @@ public class DriveConstants {
     public static final double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
     
     public static final double movementLimitAmount = 40; //Given to x/y slew rate limiters
-    public static final double rotationLimitAmount = 3; //Given to rotation slew rate limiter
+    public static final double rotationLimitAmount = 20; //Given to rotation slew rate limiter
     public static final double xyReduction = 0.75; //Multiplied to goToPose Outputs
     public static final double goToPoseMaxspeeds = 0.2;
     public static final double DistanceAndVelocityCoefficient = 0.05;

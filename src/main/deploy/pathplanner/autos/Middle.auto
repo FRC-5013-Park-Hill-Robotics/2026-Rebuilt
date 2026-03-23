@@ -5,27 +5,40 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Middle-MoveBack"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Wait1.5"
+            "waitTime": 2.0
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Lock and Shoot 4 Sec"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Wait1.5"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 4.0
+                }
+              }
+            ]
           }
         }
       ]

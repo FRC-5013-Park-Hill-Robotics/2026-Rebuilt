@@ -11,9 +11,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Lock and Shoot 4 Sec"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
           }
         },
         {
@@ -53,12 +66,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "IntakeUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Right Hairpin End to Bump"
@@ -77,27 +84,28 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Prepare Shooter"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Right Start to Shoot"
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Prepare Shooter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lock and Shoot 4 Sec"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
           }
         },
         {

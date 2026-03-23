@@ -17,12 +17,12 @@ import frc.robot.constants.DriveConstants;
 import frc.robot.constants.LiveDriveStats;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class GamepadDrive extends Command {
+public class UnlimitedGamepadDrive extends Command {
 	private CommandSwerveDrivetrain m_drivetrain;
 	private CommandXboxController m_gamepad;
-	private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
-	private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
-	private SlewRateLimiter rotationLimiter = new SlewRateLimiter(DriveConstants.rotationLimitAmount);
+	// private SlewRateLimiter xLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
+	// private SlewRateLimiter yLimiter = new SlewRateLimiter(DriveConstants.movementLimitAmount);
+	// private SlewRateLimiter rotationLimiter = new SlewRateLimiter(DriveConstants.rotationLimitAmount);
 
 	private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(DriveConstants.MaxSpeed * 0.1).withRotationalDeadband(DriveConstants.MaxAngularRate * 0.1) // Add a 10% deadband
@@ -35,7 +35,7 @@ public class GamepadDrive extends Command {
 	 * Constructor method for the GamepadDrive class
 	 * - Creates a new GamepadDrive object.
 	 */
-	public GamepadDrive(CommandXboxController gamepad) {
+	public UnlimitedGamepadDrive(CommandXboxController gamepad) {
 		super();
 		m_gamepad = gamepad;
 		m_drivetrain = RobotContainer.getInstance().getDrivetrain();
@@ -47,9 +47,9 @@ public class GamepadDrive extends Command {
 
 		double throttle = 1;//modifyAxis(m_gamepad.getRightTriggerAxis());
 
-		double translationX = xLimiter.calculate(modifyAxis(-m_gamepad.getLeftY()));
-		double translationY = yLimiter.calculate(modifyAxis(-m_gamepad.getLeftX()));
-		double translationH = rotationLimiter.calculate(m_gamepad.getRightX());
+		double translationX = modifyAxis(-m_gamepad.getLeftY());//xLimiter.calculate(modifyAxis(-m_gamepad.getLeftY()));
+		double translationY = modifyAxis(-m_gamepad.getLeftX());//yLimiter.calculate(modifyAxis(-m_gamepad.getLeftX()));
+		double translationH = m_gamepad.getRightX();//rotationLimiter.calculate(m_gamepad.getRightX());
 		
 		if(!(translationX == 0.0 && translationY == 0.0)) {
 			double angle = calculateTranslationDirection(translationX, translationY);
@@ -57,11 +57,11 @@ public class GamepadDrive extends Command {
 			translationY = Math.sin(angle) * throttle;
 		}
 
-		if(m_gamepad.getLeftTriggerAxis() > 0.5){
-			translationX = translationX/3;
-			translationY = translationY/3;
-			translationH = translationH/2;
-		}
+		// if(m_gamepad.getLeftTriggerAxis() > 0.5){
+		// 	translationX = translationX/3;
+		// 	translationY = translationY/3;
+		// 	translationH = translationH/2;
+		// }
 
 		LiveDriveStats.OUTPUT_X = translationX;
 		LiveDriveStats.OUTPUT_Y = translationY;
@@ -74,8 +74,8 @@ public class GamepadDrive extends Command {
 
 		SmartDashboard.putNumber("Throttle", throttle);
 		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
-		SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
-		SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
+		// SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
+		// SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
 	}
 
 	@Override
