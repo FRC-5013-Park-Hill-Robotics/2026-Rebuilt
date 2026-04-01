@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9967441860536788,
-        "y": 6.833881932020362
+        "x": 4.34345259391771,
+        "y": 7.35309481216458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5675137864553728,
-        "y": 7.142862203282678
+        "x": 6.112021466905188,
+        "y": 7.369320214669052
       },
       "isLocked": false,
-      "linkedName": "Left Shooting Position"
+      "linkedName": "Left Trench Start"
     },
     {
       "anchor": {
-        "x": 3.67,
-        "y": 5.5
+        "x": 7.9779427549195,
+        "y": 6.768980322003578
       },
       "prevControl": {
-        "x": 3.0150329920366934,
-        "y": 5.4743153525945125
+        "x": 7.961717352415027,
+        "y": 7.71005366726297
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Left Startpoint"
+      "linkedName": "Left Center of Field"
     }
   ],
   "rotationTargets": [],
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": -45.0
+    "velocity": 5.45,
+    "rotation": 81.87
   },
   "reversed": false,
-  "folder": "Left Sequence",
+  "folder": "Left Trench Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -60.75117366345309
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

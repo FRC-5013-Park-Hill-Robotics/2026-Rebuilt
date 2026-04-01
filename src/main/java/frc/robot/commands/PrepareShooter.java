@@ -61,17 +61,16 @@ public class PrepareShooter extends Command {
     //ShotData data = ShooterCalculator.calculateShot(state.Speeds.vxMetersPerSecond, state.Speeds.vyMetersPerSecond, currentPose, targetPose, LauncherConstants.TargetConstants.SHOOTER_DATA);
     
     double distToTarget = Math.hypot(targetPose.getX()-state.Pose.getX(), targetPose.getY()-state.Pose.getY());
-    double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(distToTarget);
-    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(distToTarget);
+    double shooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(distToTarget);
 
     // Rollers
     if(LiveDriveStats.AUTO_SHOOTING){
-      m_launcherRollers.setSpeedTop(topShooterSpeed);
+      m_launcherRollers.setSpeed(shooterSpeed);
+      //m_launcherRollers.setSpeed(shooterSpeed);
       //m_launcherRollers.setSpeedBack(backShooterSpeed);
     }
 
-    SmartDashboard.putNumber("PS: Top Shooter Speed", topShooterSpeed);
-    SmartDashboard.putNumber("PS: Back Shooter Speed", backShooterSpeed);
+    SmartDashboard.putNumber("PS: Top Shooter Speed", shooterSpeed);
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
   }
 

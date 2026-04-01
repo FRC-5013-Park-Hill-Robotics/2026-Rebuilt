@@ -8,73 +8,85 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.965491949910556,
-        "y": 4.464973166368514
+        "x": 8.22146282104258,
+        "y": 6.712429659802235
       },
       "isLocked": false,
       "linkedName": "Left Center of Field"
     },
     {
       "anchor": {
-        "x": 7.718336314847942,
-        "y": 4.108014311270125
+        "x": 8.367352415026835,
+        "y": 3.653703041144901
       },
       "prevControl": {
-        "x": 7.8693007368468075,
-        "y": 4.307287348308628
+        "x": 8.7893661877178,
+        "y": 3.701031688549495
       },
       "nextControl": {
-        "x": 7.312701252236136,
-        "y": 3.5725760286225396
+        "x": 6.6312343470483,
+        "y": 3.458998211091234
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.793488372093024,
-        "y": 4.205366726296958
+        "x": 7.296475849731663,
+        "y": 5.292468694096601
       },
       "prevControl": {
-        "x": 6.955742397137746,
-        "y": 3.9457602862254024
+        "x": 7.86436493738819,
+        "y": 5.308694096601073
       },
       "nextControl": {
-        "x": 6.657519190183215,
-        "y": 4.422917417352654
+        "x": 6.80472232888587,
+        "y": 5.278418593501008
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.55010733452594,
+        "x": 3.3699284436493735,
+        "y": 5.292468694096601
+      },
+      "prevControl": {
+        "x": 4.181198568872986,
         "y": 5.260017889087655
-      },
-      "prevControl": {
-        "x": 6.55010733452594,
-        "y": 4.870608228980322
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End Hairpin Intake"
+      "linkedName": "Over Bump Shoot"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5080213903743316,
-      "rotationDegrees": 85.0
+      "waypointRelativePos": 0.8,
+      "rotationDegrees": 90.0
     },
     {
-      "waypointRelativePos": 2.0,
-      "rotationDegrees": -85.0
+      "waypointRelativePos": 1.05,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.2,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.9,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.45,
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 6.0,
     "maxAcceleration": 12.0,
     "maxAngularVelocity": 840.0,
     "maxAngularAcceleration": 12500.0,
@@ -82,14 +94,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 6.0,
-    "rotation": -87.51044707800077
+    "velocity": 0,
+    "rotation": -45.0
   },
   "reversed": false,
-  "folder": "Left Sequence",
+  "folder": "Left Trench Sequence",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 81.86989764584396
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

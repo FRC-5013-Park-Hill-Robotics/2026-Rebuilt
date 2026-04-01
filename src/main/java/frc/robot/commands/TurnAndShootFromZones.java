@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,6 +21,8 @@ import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LauncherRollers;
 import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
@@ -31,23 +34,30 @@ public class TurnAndShootFromZones extends Command {
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Conveyor m_conveyor;
+  private Feeder m_feeder;
+  private Intake m_intake;
   private CommandXboxController m_controller;
   private Alliance m_alliance;
 
-  private boolean m_runonce = true;
+  private Timer m_intakeTimer = new Timer();
+  private Boolean m_intakeRunOnce = false;
 
-  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, CommandXboxController driverController) {
+  public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, Feeder feeder, Intake intake, CommandXboxController driverController) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
+    m_feeder = feeder;
+    m_intake = intake;
     m_controller = driverController;
+    m_intakeTimer.start();
   }
 
   @Override
   public void initialize() {
     m_alliance = RobotContainer.getAlliance();
-    m_runonce = true;
+    m_intakeTimer.reset();
+    m_intakeRunOnce = false;
   }
 
   @Override
@@ -97,7 +107,7 @@ public class TurnAndShootFromZones extends Command {
     double headingLead = 0;//m_controller.getRightX()*3;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
     // 6. Calculate Shooter Speed and Heading with offsets
-    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+    // double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
@@ -114,18 +124,17 @@ public class TurnAndShootFromZones extends Command {
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
-        m_launcherRollers.setSpeedBack(backShooterSpeed);
-
-        if(m_runonce){
-          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
-          m_runonce = false;
-        }
+        m_feeder.outtake();
       }
       else{
         m_conveyor.setTarget(0);
-        m_launcherRollers.setSpeedBottom(0);
-        m_runonce = true;
+        m_feeder.setSpeed(0);
       }
+    }
+
+    if(m_intakeTimer.hasElapsed(CommandConstants.IntakeBringInTime) && m_intakeRunOnce == false){
+      m_intake.moveIntakeIn();
+      m_intakeRunOnce = true;
     }
 
     // Telemetry
@@ -134,12 +143,13 @@ public class TurnAndShootFromZones extends Command {
     SmartDashboard.putBoolean("TASFZ: Ready to Shoot", isAligned);
     SmartDashboard.putNumber("TASFZ: Output H", outputH);
     SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
+    SmartDashboard.putBoolean("TASFZ: Intake Timer", m_intakeTimer.hasElapsed(CommandConstants.IntakeBringInTime));
   }
 
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
-    m_launcherRollers.setSpeedBottom(0);
-    m_launcherRollers.setSpeedBack(0);
+    m_feeder.setSpeed(0);
+    m_intake.moveIntakeOut();
   }
 
   @Override public boolean isFinished() { return false; }

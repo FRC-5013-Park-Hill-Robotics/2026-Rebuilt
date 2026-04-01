@@ -3,10 +3,12 @@ package frc.robot.subsystems;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -19,8 +21,9 @@ import frc.robot.constants.IntakeConstants;
 import frc.robot.trobot5013lib.AverageOverTime;
 
 public class Intake extends SubsystemBase {
-    private TalonFX intakeRollerMotor = new TalonFX(CANConstants.INTAKE_MAIN_ID, CANConstants.CANBUS_AUX);
-    private TalonFX intakeMoverMotor = new TalonFX(CANConstants.INTAKE_RIGHT_ID, CANConstants.CANBUS_AUX);
+    private TalonFX intakeLeftMotor = new TalonFX(CANConstants.INTAKE_L_ID, CANConstants.CANBUS_AUX);
+    private TalonFX intakeRightMotor = new TalonFX(CANConstants.INTAKE_R_ID, CANConstants.CANBUS_AUX);
+    private TalonFX intakeMoverMotor = new TalonFX(CANConstants.INTAKE_MOVER_ID, CANConstants.CANBUS_AUX);
 
     private VelocityVoltage m_IntakeVelocityVoltage = new VelocityVoltage(0);
     private double target = 0;
@@ -31,7 +34,7 @@ public class Intake extends SubsystemBase {
     private final Timer m_moverTimer = new Timer();
     private double m_HoldPosition = 0;
 
-    private AverageOverTime MoveOutAoT = new AverageOverTime(0.1);
+    private AverageOverTime MoveOutAoT = new AverageOverTime(0.3);
 
     public enum IntakeState{
         In,
@@ -41,7 +44,6 @@ public class Intake extends SubsystemBase {
         Out
     }
     private IntakeState m_intakePosition = IntakeState.In;
-    private double mTest = 0;
 
     public Intake() {
         super();
@@ -56,21 +58,36 @@ public class Intake extends SubsystemBase {
         config.Slot0.kA = IntakeConstants.RollerGains.kA;
         config.CurrentLimits.StatorCurrentLimit = 80;
         config.CurrentLimits.SupplyCurrentLimit = 60;
-        intakeRollerMotor.getConfigurator().apply(config);
-        intakeRollerMotor.set(0);
+        intakeRightMotor.getConfigurator().apply(config);
+        intakeRightMotor.set(0);
 
         TalonFXConfiguration config2 = new TalonFXConfiguration();
-        config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        config2.Slot0.kP = IntakeConstants.IntakeMoverGains.kP;
-        config2.Slot0.kI = IntakeConstants.IntakeMoverGains.kI;
-        config2.Slot0.kD = IntakeConstants.IntakeMoverGains.kD;
-        config2.Slot0.kS = IntakeConstants.IntakeMoverGains.kS;
-        config2.Slot0.kV = IntakeConstants.IntakeMoverGains.kV;
-        config2.Slot0.kA = IntakeConstants.IntakeMoverGains.kA;
-        config2.CurrentLimits.StatorCurrentLimit = 60;
-        config2.CurrentLimits.SupplyCurrentLimit = 40;
-        intakeMoverMotor.getConfigurator().apply(config2);
+        config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config2.Slot0.kP = IntakeConstants.RollerGains.kP;
+        config2.Slot0.kI = IntakeConstants.RollerGains.kI;
+        config2.Slot0.kD = IntakeConstants.RollerGains.kD;
+        config2.Slot0.kS = IntakeConstants.RollerGains.kS;
+        config2.Slot0.kV = IntakeConstants.RollerGains.kV;
+        config2.Slot0.kA = IntakeConstants.RollerGains.kA;
+        config2.CurrentLimits.StatorCurrentLimit = 80;
+        config2.CurrentLimits.SupplyCurrentLimit = 60;
+        intakeRightMotor.getConfigurator().apply(config2);
+        intakeRightMotor.setControl(new Follower(CANConstants.INTAKE_L_ID, MotorAlignmentValue.Opposed));
+        intakeRightMotor.set(0);
+
+        TalonFXConfiguration config3 = new TalonFXConfiguration();
+        config3.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config3.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        config3.Slot0.kP = IntakeConstants.IntakeMoverGains.kP;
+        config3.Slot0.kI = IntakeConstants.IntakeMoverGains.kI;
+        config3.Slot0.kD = IntakeConstants.IntakeMoverGains.kD;
+        config3.Slot0.kS = IntakeConstants.IntakeMoverGains.kS;
+        config3.Slot0.kV = IntakeConstants.IntakeMoverGains.kV;
+        config3.Slot0.kA = IntakeConstants.IntakeMoverGains.kA;
+        config3.CurrentLimits.StatorCurrentLimit = 60;
+        config3.CurrentLimits.SupplyCurrentLimit = 40;
+        intakeMoverMotor.getConfigurator().apply(config3);
         intakeMoverMotor.set(0);
 
         m_IntakeVelocityVoltage.withSlot(0);
@@ -83,7 +100,8 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         m_IntakeVelocityVoltage.withVelocity(m_intakeWheelLimiter.calculate(target));
-        intakeRollerMotor.setControl(m_IntakeVelocityVoltage);
+        intakeLeftMotor.setControl(m_IntakeVelocityVoltage);
+        //intakeRightMotor.setControl(m_IntakeVelocityVoltage); Follower
 
         double intakePos = intakeMoverMotor.getPosition().getValueAsDouble();
         double intakeTime = intakeMoverMotor.getPosition().getTimestamp().getTime();
@@ -97,7 +115,7 @@ public class Intake extends SubsystemBase {
             m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveOutVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
-            if(m_moverTimer.hasElapsed(IntakeConstants.moverOutTime) && Math.abs(MoveOutAoT.getAverage(intakeTime) - intakePos) < IntakeConstants.outNoMovingTollerance){
+            if(m_moverTimer.hasElapsed(IntakeConstants.moveTime) /*&& Math.abs(MoveOutAoT.getAverage(intakeTime) - intakePos) < IntakeConstants.noMovingTollerance*/){
                 m_intakePosition = IntakeState.Out;
             }
         }
@@ -106,7 +124,7 @@ public class Intake extends SubsystemBase {
             m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveInVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
-            if(intakeMoverMotor.getPosition().getValueAsDouble() <= 0){
+            if(m_moverTimer.hasElapsed(IntakeConstants.moveTime) /*&& Math.abs(MoveOutAoT.getAverage(intakeTime) - intakePos) < IntakeConstants.noMovingTollerance*/){
                 m_intakePosition = IntakeState.In;
             }
         }
@@ -135,8 +153,6 @@ public class Intake extends SubsystemBase {
         // intakeMoverMotor.setControl(m_MoverVelocityVoltage);
 
         SmartDashboard.putString("Intake: Intake State", state);
-
-        SmartDashboard.putNumber("Intake: Intake Test", mTest);
 
         SmartDashboard.putNumber("Intake: Mover Current AoT", MoveOutAoT.getAverage(intakeMoverMotor.getPosition().getTimestamp().getTime()));
         SmartDashboard.putNumber("Intake: Mover Hold Position", m_HoldPosition);
@@ -167,12 +183,12 @@ public class Intake extends SubsystemBase {
     }
 
     public void moveIntakeIn(){
+        m_moverTimer.reset();
         m_intakePosition = IntakeState.TowardsIn;
     }
 
     public void moveIntakeOut(){
         m_moverTimer.reset();
-        mTest++;
         m_intakePosition = IntakeState.TowardsOut;
     }
 
@@ -185,7 +201,7 @@ public class Intake extends SubsystemBase {
         if(m_intakePosition == IntakeState.In /*|| m_intakePosition == IntakeState.TowardsIn*/){
             moveIntakeOut();
         }
-        if(m_intakePosition == IntakeState.Out || m_intakePosition == IntakeState.TowardsOut){
+        if(m_intakePosition == IntakeState.Out /*|| m_intakePosition == IntakeState.TowardsOut*/){
             moveIntakeIn();
         }
     }

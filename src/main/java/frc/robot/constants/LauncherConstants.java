@@ -22,33 +22,13 @@ public final class LauncherConstants {
   public final static double REV_TIME = 0.05;
   public final static double REV_OFFSET = 0.2;
 
-  public final static class TopRollerGains {
-    public static final double kP = 0.3;
+  public final static class RollerGains {
+    public static final double kP = 0.06;//0.3;
     public static final double kI = 0;
-    public static final double kD = 0.04;
+    public static final double kD = 0.0;//0.04;
     public static final double kF = 0;
     public static final double kS = 0.39545;
-    public static final double kV = 0.12212;
-    public static final double kA = 0.0046099;
-  }
-
-  public final static class BackRollerGains {
-    public static final double kP = 0.3;
-    public static final double kI = 0;
-    public static final double kD = 0.04;
-    public static final double kF = 0;
-    public static final double kS = 0.39545;
-    public static final double kV = 0.12212;
-    public static final double kA = 0.0046099;
-  }
-
-  public final static class BottomRollerGains {
-    public static final double kP = 0.3;
-    public static final double kI = 0;
-    public static final double kD = 0.04;
-    public static final double kF = 0;
-    public static final double kS = 0.39545;
-    public static final double kV = 0.12212;
+    public static final double kV = 0.117;
     public static final double kA = 0.0046099;
   }
   
@@ -59,60 +39,27 @@ public final class LauncherConstants {
     //distance from hub and shooter speed in rps
     //Front, added 0 to all
     public static final double[][] SHOOTER_HUB_DATA1 = {
-      {1.9752, 52},
-      {2.3242, 51},
-      {2.5399, 54},
-      {2.8627, 55},
-      {3.1603, 58},
-      {3.8657, 59},
-      {10, 85}
-      // {1.9137,48},
-      // {2.0623,50},
-      // {2.1633,55},
-      // {2.4119,66},
-      // {2.5345,66},
-      // {2.8522,67},
-      // {3.1150,74},
-      // {3.7284,80},
-    };
-    //Back, added 0.5 to all
-    public static final double[][] SHOOTER_HUB_DATA2 = {
-      {1.9752, 20},
-      {2.3242, 21},
-      {2.5399, 23},
-      {2.8627, 24},
-      {3.1603, 26}, 
-      {3.8657, 27},
-      {10, 50}
-      // {1.9137,17},
-      // {2.0623,20},
-      // {2.1633,21},
-      // {2.4119,25},
-      // {2.5345,26},
-      // {2.8522,27},
-      // {3.1150,28},
-      // {3.7284,28},
+      {1.950, 41.994},
+      {2.438, 43.623},
+      {3.076, 48.262},
+      {3.497, 49.684},
+      {3.984, 52.184},
+      {4.507, 55.580},
+      {5.000, 60.000}
     };
     public static final LinearInterpolator shooterHubInterpolator1 = new LinearInterpolator(SHOOTER_HUB_DATA1);
-    public static final LinearInterpolator shooterHubInterpolator2 = new LinearInterpolator(SHOOTER_HUB_DATA2);
-
+    
     //distance from ground and shooter speed in rps
     public static final double[][] SHOOTER_GROUND_DATA1 = {
-      {0,0},
-      {1,0},
-      {2,0},
-      {3,0}
-    };
-    public static final double[][] SHOOTER_GROUND_DATA2 = {
-      {0,0},
-      {1,0},
-      {2,0},
-      {3,0}
+      {4.440, 48.5},
+      {5.437, 55},
+      {5.937, 58.5},
+      {6.241, 59.5},
+      {7.449, 64},
+      {15,80}
     };
     public static final LinearInterpolator shooterGroundInterpolator1 = new LinearInterpolator(SHOOTER_HUB_DATA1);
-    public static final LinearInterpolator shooterGroundInterpolator2 = new LinearInterpolator(SHOOTER_HUB_DATA2);
-
-
+    
     //Format: {RollerSpeed, Distance, TOF,  ExitVelocity}
     public static final double[][] SHOOTER_DATA = {
       {4, 1.2319, 6.19, 30.3522342096},

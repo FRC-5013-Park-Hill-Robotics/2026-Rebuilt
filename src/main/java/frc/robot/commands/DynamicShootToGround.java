@@ -6,8 +6,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +20,7 @@ import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LauncherRollers;
 import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
@@ -33,24 +32,32 @@ public class DynamicShootToGround extends Command {
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Conveyor m_conveyor;
+  private Feeder m_feeder;
+  private CommandXboxController m_controller;
+  private Alliance m_alliance;
 
   private boolean m_runonce = true;
 
-  public DynamicShootToGround(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor) {
+  public DynamicShootToGround(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, Feeder feeder, CommandXboxController driverController) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
+    m_feeder = feeder;
+    m_controller = driverController;
   }
 
   @Override
   public void initialize() {
+    m_alliance = RobotContainer.getAlliance();
+    m_runonce = true;
   }
 
   @Override
   public void execute() {
     SwerveDriveState state = m_drivetrain.getState();
     Pose2d currentPose = state.Pose;
+
     Pose2d targetPose = LiveDriveStats.DYNAMIC_SHOOT_TARGET;
     
     // 1. Calculate the vector to the target
@@ -76,7 +83,10 @@ public class DynamicShootToGround extends Command {
     double adjustedDist = distToTarget - (velocityTowardsTarget * LauncherConstants.TargetConstants.distCoefficient);
 
     // Adjust heading error based on sideways drift
-    double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
+    double headingLead = 0;//m_controller.getRightX()*3;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
+
+    // 6. Calculate Shooter Speed and Heading with offsets
+    // double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
@@ -88,46 +98,30 @@ public class DynamicShootToGround extends Command {
     outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
     LiveDriveStats.OUTPUT_H = outputH;
 
-    //Shooter
-    double topShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(adjustedDist);
-    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
-
-    if(LiveDriveStats.AUTO_SHOOTING){
-      m_launcherRollers.setSpeedTop(topShooterSpeed);
-      m_launcherRollers.setSpeedBack(backShooterSpeed);
-    }
-
     //Shoot if Aligned on Target
-    boolean isAligned = m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
+    boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);//m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
-        m_launcherRollers.setSpeedBack(backShooterSpeed);
-
-        if(m_runonce){
-          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
-          m_runonce = false;
-        }
+        m_feeder.outtake();
       }
       else{
         m_conveyor.setTarget(0);
-        m_launcherRollers.setSpeedBottom(0);
-        m_runonce = true;
+        m_feeder.setSpeed(0);
       }
     }
 
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
-    SmartDashboard.putNumber("DSTG: Distance to Hub", distToTarget);
-    SmartDashboard.putBoolean("DSTG: Ready to Shoot", m_aimDebouncer.calculate(isAligned));
-    SmartDashboard.putNumber("DSTG: Output H", outputH);
-    SmartDashboard.putNumber("DSTG: Heading Error", headingError);
+    SmartDashboard.putNumber("TASFZ: Distance to Hub", distToTarget);
+    SmartDashboard.putBoolean("TASFZ: Ready to Shoot", isAligned);
+    SmartDashboard.putNumber("TASFZ: Output H", outputH);
+    SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
   }
 
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
-    m_launcherRollers.setSpeedBottom(0);
-     m_launcherRollers.setSpeedBack(0);
+    m_feeder.setSpeed(0);
   }
 
   @Override public boolean isFinished() { return false; }

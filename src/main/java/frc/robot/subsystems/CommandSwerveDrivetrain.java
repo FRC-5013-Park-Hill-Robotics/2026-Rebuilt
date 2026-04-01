@@ -290,7 +290,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
 
         setControl(drive
-			.withVelocityX(-CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(LiveDriveStats.OUTPUT_X)))
+			.withVelocityX(CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(LiveDriveStats.OUTPUT_X)))
 			.withVelocityY(CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(LiveDriveStats.OUTPUT_Y))) 
 			.withRotationalRate(-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(rotationLimiter.calculate(LiveDriveStats.OUTPUT_H))));
     }
