@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.507406082289803,
-        "y": 6.509373881932022
+        "x": 6.55010733452594,
+        "y": 5.260017889087655
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.040440140845071,
-        "y": 6.957200704225352
+        "x": 6.083141393081208,
+        "y": 5.707844711380986
       },
       "isLocked": false,
       "linkedName": "End Hairpin Intake"
@@ -33,15 +33,15 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 12.0,
+    "maxAngularVelocity": 840.0,
+    "maxAngularAcceleration": 12500.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 3.0,
+    "velocity": 1.5,
     "rotation": -45.0
   },
   "reversed": false,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": -87.51044707800077
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

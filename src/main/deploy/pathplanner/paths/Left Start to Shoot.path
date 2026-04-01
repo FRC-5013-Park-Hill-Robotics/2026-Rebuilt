@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.208045774647888,
-        "y": 5.455387323943662
+        "x": 3.120281544398268,
+        "y": 5.476447999052386
       },
       "isLocked": false,
       "linkedName": "Left Startpoint"
     },
     {
       "anchor": {
-        "x": 2.5373767605633812,
-        "y": 5.520052816901409
+        "x": 2.9967441860536788,
+        "y": 6.833881932020362
       },
       "prevControl": {
-        "x": 2.9525528169014095,
-        "y": 5.823450704225352
+        "x": 3.5985829995174625,
+        "y": 6.853340480514276
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,16 +33,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 6.0,
+    "maxAcceleration": 12.0,
+    "maxAngularVelocity": 840.0,
+    "maxAngularAcceleration": 12500.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -39.48852258397941
+    "rotation": -60.75117366345309
   },
   "reversed": false,
   "folder": "Left Sequence",

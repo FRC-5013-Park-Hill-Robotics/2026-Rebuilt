@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.CANConstants;
+import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LauncherConstants;
 import frc.robot.constants.LiveDriveStats;
@@ -32,157 +33,67 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
-public class LauncherRollers extends SubsystemBase {
+public class Feeder extends SubsystemBase {
   /** Creates a new LauncherRollers. */
-  private TalonFX OuttakeLT = new TalonFX(CANConstants.OUTTAKE_LT_ID, CANConstants.CANBUS_AUX);
-  private TalonFX OuttakeLB= new TalonFX(CANConstants.OUTTAKE_LB_ID, CANConstants.CANBUS_AUX);
-  private TalonFX OuttakeRT= new TalonFX(CANConstants.OUTTAKE_RT_ID, CANConstants.CANBUS_AUX);
+  private TalonFX mFeederMotor = new TalonFX(CANConstants.FEEDER_ID, CANConstants.CANBUS_AUX);
+  
+  private SlewRateLimiter m_FeederLimiter = new SlewRateLimiter(300);
+  private VelocityVoltage m_FeederVoltage = new VelocityVoltage(0);
 
-  private SlewRateLimiter m_Limiter = new SlewRateLimiter(80);
-  private VelocityVoltage m_Voltage = new VelocityVoltage(0);
+  private double goalSpeedFeeder = 0;
 
-  private double goalSpeed = 0;
-  private boolean STOP = false;
-
-  private boolean RevWheels = false; //When outtaking, spin up wheels a little bit
-  private Timer RevTimer = new Timer();
-
-  public LauncherRollers() {
-    TalonFXConfiguration topConfig1 = new TalonFXConfiguration();
-    topConfig1.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    topConfig1.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topConfig1.Slot0.kP = LauncherConstants.RollerGains.kP;
-    topConfig1.Slot0.kI = LauncherConstants.RollerGains.kI;
-    topConfig1.Slot0.kD = LauncherConstants.RollerGains.kD;
-    topConfig1.Slot0.kS = LauncherConstants.RollerGains.kS;
-    topConfig1.Slot0.kV = LauncherConstants.RollerGains.kV;
-    topConfig1.Slot0.kA = LauncherConstants.RollerGains.kA;
-    topConfig1.CurrentLimits.StatorCurrentLimit = 60;
-    topConfig1.CurrentLimits.SupplyCurrentLimit = 40;
-    OuttakeLT.set(0);
-    OuttakeLB.set(0);
-    OuttakeLT.getConfigurator().apply(topConfig1);
-    OuttakeLB.getConfigurator().apply(topConfig1);
-    // OuttakeLT.setControl(new Follower(CANConstants.OUTTAKE_RT_ID, MotorAlignmentValue.Aligned));
-    // OuttakeLB.setControl(new Follower(CANConstants.OUTTAKE_RT_ID, MotorAlignmentValue.Aligned));
-
-    TalonFXConfiguration topConfig2 = new TalonFXConfiguration();
-    topConfig2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    topConfig2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    topConfig2.Slot0.kP = LauncherConstants.RollerGains.kP;
-    topConfig2.Slot0.kI = LauncherConstants.RollerGains.kI;
-    topConfig2.Slot0.kD = LauncherConstants.RollerGains.kD;
-    topConfig2.Slot0.kS = LauncherConstants.RollerGains.kS;
-    topConfig2.Slot0.kV = LauncherConstants.RollerGains.kV;
-    topConfig2.Slot0.kA = LauncherConstants.RollerGains.kA;
-    topConfig2.CurrentLimits.StatorCurrentLimit = 60;
-    topConfig2.CurrentLimits.SupplyCurrentLimit = 40;
-    OuttakeRT.set(0);
-    OuttakeRT.getConfigurator().apply(topConfig2);
-    m_Voltage.withSlot(0);
-
-    RevTimer.start();
-
-    this.start();
+  public Feeder() {
+    TalonFXConfiguration Config = new TalonFXConfiguration();
+    Config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    Config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    Config.Slot0.kP = FeederConstants.RollerGains.kP;
+    Config.Slot0.kI = LauncherConstants.RollerGains.kI;
+    Config.Slot0.kD = LauncherConstants.RollerGains.kD;
+    Config.Slot0.kS = LauncherConstants.RollerGains.kS;
+    Config.Slot0.kV = LauncherConstants.RollerGains.kV;
+    Config.Slot0.kA = LauncherConstants.RollerGains.kA;
+    Config.CurrentLimits.StatorCurrentLimit = 50;
+    Config.CurrentLimits.SupplyCurrentLimit = 40;
+    mFeederMotor.set(0);
+    mFeederMotor.getConfigurator().apply(Config);
+    m_FeederVoltage.withSlot(0);
   }
 
   @Override
   public void periodic() {
     
-    if(!STOP){
-      m_Voltage.withVelocity(m_Limiter.calculate(goalSpeed));
-      OuttakeRT.setControl(m_Voltage);
-      // Followers
-      OuttakeLB.setControl(m_Voltage);
-      OuttakeLT.setControl(m_Voltage);
-    }
-
-    // if(RevWheels && !RevTimer.hasElapsed(LauncherConstants.REV_TIME)){
-    //   m_TopVoltage.withVelocity(m_TopLimiter.calculate(goalSpeedTop+LauncherConstants.REV_OFFSET));
-    //   OuttakeLT.setControl(m_TopVoltage);
-    //   OuttakeRB.setControl(m_TopVoltage);
-    //   OuttakeRT.setControl(m_TopVoltage);
-
-    //   m_BackVoltage.withVelocity(m_BackLimiter.calculate(goalSpeedBack+LauncherConstants.REV_OFFSET));
-    //   OuttakeLB.setControl(m_BackVoltage);
-    // }
-
-    if(goalSpeed == 0){
-      OuttakeLT.setVoltage(0);
-      OuttakeLB.setVoltage(0);
-      OuttakeRT.setVoltage(0);
-    }
+    m_FeederVoltage.withVelocity(m_FeederLimiter.calculate(goalSpeedFeeder));
+    mFeederMotor.setControl(m_FeederVoltage);
     
-    SmartDashboard.putNumber("Outtake: LT Speed", OuttakeLT.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake: RB Speed", OuttakeLB.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake: RT Speed", OuttakeRT.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Outtake: Top Goal", goalSpeed);
+    SmartDashboard.putNumber("Feeder: Speed", mFeederMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Feeder: Goal Speed", goalSpeedFeeder);
   }
 
-  // GENERAL METHODS
-  // public double getSpeedFromDist(double distance) {
-  //   return LauncherConstants.TargetConstants.getShooterSpeed(distance, 0);
-  // } //No Command Attached
-
-  // GENERAL COMMANDS
-  public void start() {
-    STOP = false;
-    this.goalSpeed = 0;
-  }
-  
-  public void stopLauncher(){
-    STOP = true;
-    this.goalSpeed = 0;
-  } 
-
-  public void toggleStopLauncher(){
-    STOP = !STOP;
-    this.goalSpeed = 0;
-  } 
-
-  public void toggleAutoShooting(){
-    LiveDriveStats.AUTO_SHOOTING = !LiveDriveStats.AUTO_SHOOTING;
-  }
-
-  public Command startCommand(){
-    Command result = runOnce(this::start);
-    return result;
-  }
-
-  public Command stopCommand(){
-    Command result = runOnce(this::stopLauncher);
-    return result;
-  }
-
-  public Command toggleStopCommand(){
-    Command result = runOnce(this::toggleStopLauncher);
-    return result;
-  }
-
-  public Command toggleAutoShootingCommand(){
-    Command result = runOnce(()->toggleAutoShooting());
-    return result;
-  }
-
-  //public Command setSpeedCommand( SpeedTop,)
-
-  // TOP ROLLER METHODS
-  public void incrementSpeed(double rpsChange) {
-    this.goalSpeed += rpsChange;
-  }
-
+  // FEEDER METHODS
   public void setSpeed(double rps) {
-    this.goalSpeed = rps;
+    this.goalSpeedFeeder = rps;
   }
 
+  public void incrementSpeed(double rpsChange) {
+    this.goalSpeedFeeder += rpsChange;
+  }
+
+  public void outtake(){
+    this.goalSpeedFeeder = FeederConstants.OUTTAKE_SPEED;
+  }
 
   public Command incrementSpeedCommand(double rpsChange){
     Command result = runOnce(()-> incrementSpeed(rpsChange));
     return result;
   } 
-
+  
   public Command setSpeedCommand(double rps){
     Command result = runOnce(()-> setSpeed(rps));
+    return result;
+  } 
+
+  public Command outtakeCommand(){
+    Command result = runOnce(()-> outtake());
     return result;
   } 
 

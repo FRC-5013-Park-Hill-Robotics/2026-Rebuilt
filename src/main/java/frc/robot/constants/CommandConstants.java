@@ -7,5 +7,6 @@ package frc.robot.constants;
 /** Add your docs here. */
 public final class CommandConstants {
     public static final double ShootAngleTolerance = 3; //While |errorH| < ShootAngleTolerance, shoot
+    public static final double IntakeBringInTime = 2.5;
     //public static final double Velocity
 }

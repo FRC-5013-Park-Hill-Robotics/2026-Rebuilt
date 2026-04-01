@@ -50,23 +50,25 @@ import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
-    // private final PhotonCamera backLeftCamera;
-    // private final PhotonCamera backRightCamera;
-    private final PhotonCamera shooterCamera;
-    private final PhotonCamera frontLeftCamera;
-    private final PhotonCamera frontRightCamera;
-    // private final PhotonPoseEstimator BLPhotonEstimator;
-    // private final PhotonPoseEstimator BRPhotonEstimator;
-    private final PhotonPoseEstimator shooterPhotonEstimator;
-    private final PhotonPoseEstimator FLPhotonEstimator;
-    private final PhotonPoseEstimator FRPhotonEstimator;
+    private final PhotonCamera FrontCamera;
+    private final PhotonCamera BackCamera;
+    private final PhotonCamera LeftCamera;
+    private final PhotonCamera RightCamera;
+    
+    private final PhotonPoseEstimator FrontPhotonEstimator;
+    private final PhotonPoseEstimator BackPhotonEstimator;
+    private final PhotonPoseEstimator LeftPhotonEstimator;
+    private final PhotonPoseEstimator RightPhotonEstimator;
+
     private Matrix<N3, N1> curStdDevs;
     private final CommandSwerveDrivetrain estConsumer;
 
     // Simulation
-    private PhotonCameraSim FLCameraSim;
-    private PhotonCameraSim FRCameraSim;
-    private PhotonCameraSim ShooterCameraSim;
+    private PhotonCameraSim FrontCameraSim;
+    private PhotonCameraSim BackCameraSim;
+    private PhotonCameraSim LeftCameraSim;
+    private PhotonCameraSim RightCameraSim;
+
     private VisionSystemSim visionSim;
 
     private Boolean visionUpdatesEnabled = true;
@@ -77,13 +79,15 @@ public class Vision extends SubsystemBase {
      */
     public Vision(CommandSwerveDrivetrain estConsumer) {
         this.estConsumer = estConsumer;
-        shooterCamera = new PhotonCamera(VisionConstants.kShooterPhoton);
-        frontLeftCamera = new PhotonCamera(VisionConstants.kFrontLeftPhoton);
-        frontRightCamera = new PhotonCamera(VisionConstants.kFrontRightPhoton);
+        FrontCamera = new PhotonCamera(VisionConstants.kFrontPhoton);
+        BackCamera = new PhotonCamera(VisionConstants.kBackPhoton);
+        LeftCamera = new PhotonCamera(VisionConstants.kLeftPhoton);
+        RightCamera = new PhotonCamera(VisionConstants.kRightPhoton);
 
-        shooterPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kShooterCamOffset);
-        FLPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kFLCamOffset);
-        FRPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kFRCamOffset);
+        FrontPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kFrontCamOffset);
+        BackPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kBackOffset);
+        LeftPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kLeftCamOffset);
+        RightPhotonEstimator = new PhotonPoseEstimator(VisionConstants.kTagLayout, VisionConstants.kRightCamOffset);
 
         // ----- Simulation
         if (Robot.isSimulation()) {
@@ -100,14 +104,16 @@ public class Vision extends SubsystemBase {
             cameraProp.setLatencyStdDevMs(15);
             // Create a PhotonCameraSim which will update the linked PhotonCamera's values with visible
             // targets.
-            ShooterCameraSim = new PhotonCameraSim(shooterCamera, cameraProp);
-            FLCameraSim = new PhotonCameraSim(frontLeftCamera, cameraProp);
-            FRCameraSim = new PhotonCameraSim(frontRightCamera, cameraProp);
+            FrontCameraSim = new PhotonCameraSim(FrontCamera, cameraProp);
+            BackCameraSim = new PhotonCameraSim(BackCamera, cameraProp);
+            LeftCameraSim = new PhotonCameraSim(LeftCamera, cameraProp);
+            RightCameraSim = new PhotonCameraSim(RightCamera, cameraProp);
 
             // Add the simulated camera to view the targets on this simulated field.
-            visionSim.addCamera(ShooterCameraSim, VisionConstants.kShooterCamOffset);
-            visionSim.addCamera(FLCameraSim, VisionConstants.kFLCamOffset);
-            visionSim.addCamera(FRCameraSim, VisionConstants.kFRCamOffset);
+            visionSim.addCamera(FrontCameraSim, VisionConstants.kFrontCamOffset);
+            visionSim.addCamera(BackCameraSim, VisionConstants.kBackOffset);
+            visionSim.addCamera(LeftCameraSim, VisionConstants.kLeftCamOffset);
+            visionSim.addCamera(RightCameraSim, VisionConstants.kRightCamOffset);
 
             //backCameraSim.enableDrawWireframe(true);
         }
@@ -116,9 +122,10 @@ public class Vision extends SubsystemBase {
     @Override
     public void periodic() {
         if(visionUpdatesEnabled){
-            processCamera(frontLeftCamera, FLPhotonEstimator);
-            processCamera(frontRightCamera, FRPhotonEstimator);
-            processCamera(shooterCamera, shooterPhotonEstimator);
+            processCamera(FrontCamera, FrontPhotonEstimator);
+            //processCamera(BackCamera, BackPhotonEstimator);
+            //processCamera(LeftCamera, LeftPhotonEstimator);
+            //processCamera(RightCamera, RightPhotonEstimator);
         }
         SmartDashboard.putBoolean("Vision Enabled", visionUpdatesEnabled);
     }

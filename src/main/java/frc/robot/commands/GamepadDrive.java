@@ -45,17 +45,17 @@ public class GamepadDrive extends Command {
 	@Override
 	public void execute() {
 
-		double throttle = 1;//modifyAxis(m_gamepad.getRightTriggerAxis());
+		//double throttle = 0.333;//modifyAxis(m_gamepad.getRightTriggerAxis());
 
-		double translationX = xLimiter.calculate(modifyAxis(-m_gamepad.getLeftY()));
-		double translationY = yLimiter.calculate(modifyAxis(-m_gamepad.getLeftX()));
+		double translationX = modifyAxis(-m_gamepad.getLeftY());
+		double translationY = modifyAxis(-m_gamepad.getLeftX());
 		double translationH = rotationLimiter.calculate(m_gamepad.getRightX());
 		
-		if(!(translationX == 0.0 && translationY == 0.0)) {
-			double angle = calculateTranslationDirection(translationX, translationY);
-			translationX = Math.cos(angle) * throttle;
-			translationY = Math.sin(angle) * throttle;
-		}
+		// if(!(translationX == 0.0 && translationY == 0.0)) {
+		// 	double angle = calculateTranslationDirection(translationX, translationY);
+		// 	translationX = Math.cos(angle) * throttle;
+		// 	translationY = Math.sin(angle) * throttle;
+		// }
 
 		if(m_gamepad.getLeftTriggerAxis() > 0.5){
 			translationX = translationX/3;
@@ -63,8 +63,14 @@ public class GamepadDrive extends Command {
 			translationH = translationH/2;
 		}
 
-		LiveDriveStats.OUTPUT_X = translationX;
-		LiveDriveStats.OUTPUT_Y = translationY;
+		if(m_gamepad.getHID().getRightBumperButton()){
+			translationX = translationX*.5;
+			translationY = translationY*.5;
+		}
+
+		double i = 1;
+		LiveDriveStats.OUTPUT_X = translationX*i;
+		LiveDriveStats.OUTPUT_Y = translationY*i;
 		LiveDriveStats.OUTPUT_H = translationH;
 		
 		// m_drivetrain.setControl(drive
@@ -72,7 +78,7 @@ public class GamepadDrive extends Command {
 		// 	.withVelocityY(CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(i*translationY))) 
 		// 	.withRotationalRate(-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(translationH)));
 
-		SmartDashboard.putNumber("Throttle", throttle);
+		//SmartDashboard.putNumber("Throttle", throttle);
 		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
 		SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
 		SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));

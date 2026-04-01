@@ -6,10 +6,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.ConveyorConstants;
@@ -19,6 +21,7 @@ import frc.robot.constants.LiveDriveStats;
 import frc.robot.constants.PoseConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Conveyor;
+import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.LauncherRollers;
 import frc.robot.trobot5013lib.ShooterCalculator;
 import frc.robot.trobot5013lib.ShooterCalculator.ShotData;
@@ -30,19 +33,19 @@ public class TurnAndShootFromZonesForAuto extends Command {
   private CommandSwerveDrivetrain m_drivetrain;
   private LauncherRollers m_launcherRollers;
   private Conveyor m_conveyor;
+  private Feeder m_feeder;
   private Alliance m_alliance;
 
   private double m_shootTime;
   private Timer m_Timer = new Timer();
-  
-  private boolean m_runonce = true;
 
-  public TurnAndShootFromZonesForAuto(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, double ShootTime) {
+  public TurnAndShootFromZonesForAuto(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, Feeder feeder, double shootTime) {
     m_controllerH.enableContinuousInput(-180, 180);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
-    m_shootTime = ShootTime;
+    m_feeder = feeder;
+    m_shootTime = shootTime;
   }
 
   @Override
@@ -95,10 +98,10 @@ public class TurnAndShootFromZonesForAuto extends Command {
     double adjustedDist = distToTarget - (velocityTowardsTarget * LauncherConstants.TargetConstants.distCoefficient);
 
     // Adjust heading error based on sideways drift
-    double headingLead = 0;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
+    double headingLead = 0;//m_controller.getRightX()*3;//velocityPerpendicular * adjustedDist * LauncherConstants.TargetConstants.leadCoefficient;
 
     // 6. Calculate Shooter Speed and Heading with offsets
-    double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
+    // double backShooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator2.getInterpolatedValue(adjustedDist);
 
     // Original heading calculation
     double rawHeadingError = Math.toDegrees(Math.atan2(dy, dx) - state.Pose.getRotation().getRadians());
@@ -110,43 +113,33 @@ public class TurnAndShootFromZonesForAuto extends Command {
     outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
     LiveDriveStats.OUTPUT_H = outputH;
 
-    //Shooter
-    //m_launcherRollers.setSpeedBottom(bottomShooterSpeed);
-
     //Shoot if Aligned on Target
-    boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
+    boolean isAligned = (Math.abs(headingError) < CommandConstants.ShootAngleTolerance);//m_aimDebouncer.calculate(Math.abs(headingError) < CommandConstants.ShootAngleTolerance);
     if(LiveDriveStats.AUTO_SHOOTING){
       if(isAligned){
         m_conveyor.setTarget(ConveyorConstants.RUNNING_SPEED);
-        m_launcherRollers.setSpeedBack(backShooterSpeed);
-
-        if(m_runonce){
-          m_launcherRollers.setSpeedBottom(LauncherConstants.OUTTAKE_SPEED_BOTTOM);
-          m_runonce = false;
-        }
+        m_feeder.outtake();
       }
       else{
         m_conveyor.setTarget(0);
-        m_launcherRollers.setSpeedBottom(0);
-        m_runonce = true;
+        m_feeder.setSpeed(0);
       }
     }
 
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
-    SmartDashboard.putNumber("TASFZFA: Distance to Hub", distToTarget);
-    SmartDashboard.putBoolean("TASFZFA: Ready to Shoot", isAligned);
-    SmartDashboard.putNumber("TASFZFA: Output H", outputH);
-    SmartDashboard.putNumber("TASFZFA: Heading Error", headingError);
+    SmartDashboard.putNumber("TASFZ: Distance to Hub", distToTarget);
+    SmartDashboard.putBoolean("TASFZ: Ready to Shoot", isAligned);
+    SmartDashboard.putNumber("TASFZ: Output H", outputH);
+    SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
   }
 
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
-    m_launcherRollers.setSpeedBottom(0);
-    m_launcherRollers.setSpeedBack(0);
+    m_feeder.setSpeed(0);
   }
 
   @Override public boolean isFinished() { 
-    return m_Timer.hasElapsed(m_shootTime); 
+    return m_Timer.hasElapsed(m_shootTime);  
   }
 }

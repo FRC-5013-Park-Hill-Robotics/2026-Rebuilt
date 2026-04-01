@@ -41,17 +41,21 @@ public class VisionConstants {
 
         public static final double kPoseAmbiguity = 0.25; //Pose Ambiguity Bar
 
-        public static final String kShooterPhoton = "ShooterCamera";
-        public static final String kFrontLeftPhoton = "LeftFrontCamera";
-        public static final String kFrontRightPhoton = "RightFrontCamera";
+        public static final String kFrontPhoton = "FrontCamera";
+        public static final String kBackPhoton = "BackCamera";
+        public static final String kLeftPhoton = "LeftCamera";
+        public static final String kRightPhoton = "RightCamera";
         
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kShooterCamOffset =
-                new Transform3d(new Translation3d(0.3429, 0, 0.489), new Rotation3d(0, Math.toRadians(33), 0));
-        public static final Transform3d kFLCamOffset =
-                new Transform3d(new Translation3d(0.254, 0.254, 0.19685), new Rotation3d(0, Math.toRadians(20), Math.toRadians(45)));
-        public static final Transform3d kFRCamOffset =
-                new Transform3d(new Translation3d(0.254, -0.254, 0.19685), new Rotation3d(0, Math.toRadians(20), Math.toRadians(-45)));
+        public static final Transform3d kFrontCamOffset =
+                new Transform3d(new Translation3d(0.10922, -0.2032, 0.5207), new Rotation3d(0, Math.toRadians(30), 0));
+        public static final Transform3d kBackOffset =
+                new Transform3d(new Translation3d(0.1397, 0.28575, 0.43815), new Rotation3d(0, Math.toRadians(30), Math.toRadians(180)));
+        public static final Transform3d kLeftCamOffset =
+                new Transform3d(new Translation3d(0.1397, 0.3048, 0.43815), new Rotation3d(0, Math.toRadians(30), Math.toRadians(-90)));
+        public static final Transform3d kRightCamOffset =
+                new Transform3d(new Translation3d(0.08255, -0.2032, 0.5207), new Rotation3d(0, Math.toRadians(30), Math.toRadians(90)));
+
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

@@ -1,0 +1,144 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.8831663685152056,
+        "y": 5.42227191413238
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8669409660107332,
+        "y": 7.369320214669052
+      },
+      "isLocked": false,
+      "linkedName": "Over Bump Shoot Left"
+    },
+    {
+      "anchor": {
+        "x": 4.229874776386405,
+        "y": 7.417996422182468
+      },
+      "prevControl": {
+        "x": 3.096308403876161,
+        "y": 7.332038782560838
+      },
+      "nextControl": {
+        "x": 7.653434704830055,
+        "y": 7.677602862254025
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.91731663685152,
+        "y": 3.5563506261180677
+      },
+      "prevControl": {
+        "x": 5.738837209302325,
+        "y": 4.594776386404293
+      },
+      "nextControl": {
+        "x": 6.043774777753475,
+        "y": 2.8205941699612413
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.523631484794276,
+        "y": 3.166940966010733
+      },
+      "prevControl": {
+        "x": 7.282605445963813,
+        "y": 3.099453675138203
+      },
+      "nextControl": {
+        "x": 7.929266547406082,
+        "y": 3.280518783542039
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.669660107334526,
+        "y": 5.292468694096601
+      },
+      "prevControl": {
+        "x": 7.718336314847943,
+        "y": 4.659677996422182
+      },
+      "nextControl": {
+        "x": 7.650485982613342,
+        "y": 5.541732315471997
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8831663685152056,
+        "y": 5.42227191413238
+      },
+      "prevControl": {
+        "x": 3.467280858676207,
+        "y": 5.406046511627907
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Over Bump Shoot Left"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.3,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.8,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.3,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 2.9,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 4.38,
+      "rotationDegrees": -45.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.0,
+    "maxAcceleration": 12.0,
+    "maxAngularVelocity": 840.0,
+    "maxAngularAcceleration": 12500.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -45.0
+  },
+  "reversed": false,
+  "folder": "Left Trench Sequence",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -45.0
+  },
+  "useDefaultConstraints": true
+}ints": true
+}
