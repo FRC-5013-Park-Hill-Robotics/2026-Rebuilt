@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.507,
-        "y": 1.5
+        "x": 7.16818661971831,
+        "y": 2.0229929577464794
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.755863247863249,
-        "y": 1.0367094017094018
+        "x": 6.417049867581559,
+        "y": 1.5597023594558812
       },
       "isLocked": false,
       "linkedName": "Right End Hairpin"

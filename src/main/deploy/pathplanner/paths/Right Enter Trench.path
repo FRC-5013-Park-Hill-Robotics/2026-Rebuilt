@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.75,
-        "y": 2.5
+        "x": 7.16818661971831,
+        "y": 2.0229929577464794
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.75,
-        "y": 2.5000000000000004
+        "x": 7.136250000000001,
+        "y": 0.6656866197183104
       },
       "isLocked": false,
-      "linkedName": "Right Over Bump End"
+      "linkedName": "Right End Hairpin"
     },
     {
       "anchor": {
-        "x": 8.20612676056338,
-        "y": 1.3363556338028173
+        "x": 4.357764084507043,
+        "y": 0.63375
       },
       "prevControl": {
-        "x": 7.156210059544174,
-        "y": -0.3659001991790949
+        "x": 5.267957746478874,
+        "y": 0.5219718309859149
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Center of Field"
+      "linkedName": "Right Under Trench Start"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": -82.0
+    "velocity": 3.0,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Right Sequence",
+  "folder": "Right Trench Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

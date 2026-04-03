@@ -1,0 +1,117 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeDownA"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Trench Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Hairpin Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Enter Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Trench Shoot"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot to Enter Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Cycle 2 Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cycle 2 Enter Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Trench Shoot"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lock and Shoot 4 Sec"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Right",
+  "choreoAuto": false
+}
