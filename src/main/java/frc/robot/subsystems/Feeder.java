@@ -82,6 +82,10 @@ public class Feeder extends SubsystemBase {
     this.goalSpeedFeeder = FeederConstants.OUTTAKE_SPEED;
   }
 
+  public void disturb(){
+    this.goalSpeedFeeder = -FeederConstants.OUTTAKE_SPEED;
+  }
+
   public Command incrementSpeedCommand(double rpsChange){
     Command result = runOnce(()-> incrementSpeed(rpsChange));
     return result;
@@ -94,6 +98,11 @@ public class Feeder extends SubsystemBase {
 
   public Command outtakeCommand(){
     Command result = runOnce(()-> outtake());
+    return result;
+  } 
+
+  public Command disturbCommand(){
+    Command result = runOnce(()-> disturb());
     return result;
   } 
 

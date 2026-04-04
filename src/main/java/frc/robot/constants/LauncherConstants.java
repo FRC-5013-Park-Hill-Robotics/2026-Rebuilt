@@ -16,9 +16,8 @@ public final class LauncherConstants {
   public final static double OUTTAKE_SPEED_BOTTOM = 80;
   public final static double SHOOTER_HEIGHT_FROM_FLOOR = 0;
 
-  public final static double SOLID_POSITION_TOP = 55;
-  public final static double SOLID_POSITION_BACK = 24;
-
+  public final static double FROM_TOWER_SPEED = 51;
+  
   public final static double REV_TIME = 0.05;
   public final static double REV_OFFSET = 0.2;
 
@@ -56,7 +55,8 @@ public final class LauncherConstants {
       {5.937, 58.5},
       {6.241, 59.5},
       {7.449, 64},
-      {15,80}
+      {9,85},
+      {20,85}
     };
     public static final LinearInterpolator shooterGroundInterpolator1 = new LinearInterpolator(SHOOTER_HUB_DATA1);
     

@@ -26,6 +26,7 @@ import frc.robot.commands.PrepareShooter;
 import frc.robot.commands.TurnToPose;
 import frc.robot.commands.UnlimitedGamepadDrive;
 import frc.robot.constants.ConveyorConstants;
+import frc.robot.constants.FeederConstants;
 import frc.robot.constants.IntakeConstants;
 import frc.robot.constants.LauncherConstants;
 import frc.robot.constants.LiveDriveStats;
@@ -106,13 +107,13 @@ public class RobotContainer {
     mDriver.b().onTrue(mIntake.moveIntakeInC()); 
     mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
 
-    mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed).alongWith(mConveyor.setTargetC(-ConveyorConstants.RUNNING_SPEED)))
-     .onFalse(mIntake.setTargetC(0).alongWith(mConveyor.setTargetC(0)));
+    mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed).alongWith(mConveyor.setTargetC(-ConveyorConstants.RUNNING_SPEED)).alongWith(mFeeder.disturbCommand()))
+     .onFalse(mIntake.setTargetC(0).alongWith(mConveyor.setTargetC(0)).alongWith(mFeeder.setSpeedCommand(0)));
     mDriver.rightBumper().onTrue(mIntake.setTargetC(IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
 
     mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor, mFeeder, mIntake, mDriver));
-    mDriver.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()))
+    mDriver.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
     
     // mDriver.povUp().onTrue(mRollers.incrementSpeedCommand(0.5));
@@ -174,7 +175,7 @@ public class RobotContainer {
     // Command shootCommand = mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM));
     // NamedCommands.registerCommand("Shoot", shootCommand);
 
-    NamedCommands.registerCommand("Lock and Shoot 4 Sec", new TurnAndShootFromZonesForAuto(mDrivetrain, mRollers, mConveyor, mFeeder, 4));
+    NamedCommands.registerCommand("Lock and Shoot 4 Sec", new TurnAndShootFromZonesForAuto(mDrivetrain, mRollers, mConveyor, mFeeder, 15));
   
     NamedCommands.registerCommand("Prepare Shooter", new PrepareShooter(mDrivetrain, mRollers));
   }
