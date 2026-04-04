@@ -29,15 +29,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Intake Stop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Right Enter Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
           }
         },
         {
@@ -59,7 +59,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.5
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -68,7 +68,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Shoot to Enter Trench"
+            "pathName": "Right Shoot to Enter Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         },
         {
@@ -80,7 +86,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Cycle 2 Enter Trench"
+            "pathName": "Right Cycle 2 Enter Trench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Stop"
           }
         },
         {
@@ -102,7 +114,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 2.0
+                  "waitTime": 15.0
                 }
               }
             ]
