@@ -113,7 +113,7 @@ public class RobotContainer {
      .onFalse(mIntake.setTargetC(0));
 
     mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor, mFeeder, mIntake, mDriver));
-    mDriver.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
+    mDriver.rightTrigger().whileTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
     
     // mDriver.povUp().onTrue(mRollers.incrementSpeedCommand(0.5));

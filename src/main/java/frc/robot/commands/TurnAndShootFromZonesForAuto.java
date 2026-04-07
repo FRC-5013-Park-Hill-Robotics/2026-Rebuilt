@@ -136,6 +136,10 @@ public class TurnAndShootFromZonesForAuto extends Command {
       m_conveyor.setTarget(-ConveyorConstants.RUNNING_SPEED);
     }
 
+    if(m_Timer.hasElapsed(1.5)){
+      m_Timer.reset();
+    }
+
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
     SmartDashboard.putNumber("TASFZ: Distance to Hub", distToTarget);
