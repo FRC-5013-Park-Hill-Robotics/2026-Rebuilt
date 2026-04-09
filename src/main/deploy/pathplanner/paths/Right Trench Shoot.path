@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.839654724799656,
-        "y": 0.4953942612008177
+        "x": 3.9053667262969585,
+        "y": 0.6357781753130586
       },
       "isLocked": false,
       "linkedName": "Right Under Trench Start"
     },
     {
       "anchor": {
-        "x": 3.1441725352112684,
-        "y": 0.8732746478873241
+        "x": 2.996744186046511,
+        "y": 0.8142576028622535
       },
       "prevControl": {
-        "x": 4.079312191496526,
-        "y": 0.6213905156532373
+        "x": 3.140109772137343,
+        "y": 0.6094496227324933
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 65.2064185629561
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Right Trench Sequence",

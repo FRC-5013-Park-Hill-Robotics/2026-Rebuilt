@@ -66,10 +66,9 @@ public class PrepareShooter extends Command {
     // Rollers
     if(LiveDriveStats.AUTO_SHOOTING){
       m_launcherRollers.setSpeed(shooterSpeed);
-      //m_launcherRollers.setSpeed(shooterSpeed);
-      //m_launcherRollers.setSpeedBack(backShooterSpeed);
     }
 
+    SmartDashboard.putNumber("PS: Distance to Hub", distToTarget);
     SmartDashboard.putNumber("PS: Top Shooter Speed", shooterSpeed);
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;
   }

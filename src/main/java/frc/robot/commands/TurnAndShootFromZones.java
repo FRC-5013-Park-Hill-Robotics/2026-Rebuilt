@@ -39,24 +39,25 @@ public class TurnAndShootFromZones extends Command {
   private CommandXboxController m_controller;
   private Alliance m_alliance;
 
-  private Timer m_intakeTimer = new Timer();
+  private Timer m_Timer = new Timer();
   private Boolean m_intakeRunOnce = false;
 
   public TurnAndShootFromZones(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, Feeder feeder, Intake intake, CommandXboxController driverController) {
     m_controllerH.enableContinuousInput(-180, 180);
+    m_controllerH.setTolerance(1);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
     m_feeder = feeder;
     m_intake = intake;
     m_controller = driverController;
-    m_intakeTimer.start();
+    m_Timer.start();
   }
 
   @Override
   public void initialize() {
     m_alliance = RobotContainer.getAlliance();
-    m_intakeTimer.reset();
+    m_Timer.reset();
     m_intakeRunOnce = false;
   }
 
@@ -115,8 +116,11 @@ public class TurnAndShootFromZones extends Command {
     double headingError = MathUtil.inputModulus(rawHeadingError + headingLead, -180, 180);
 
     //Rotation
-    double outputH = m_controllerH.calculate(headingError);
-    outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    double outputH = 0;
+    if(!m_controllerH.atSetpoint()){
+      outputH = m_controllerH.calculate(headingError);
+      outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    }
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shoot if Aligned on Target
@@ -132,8 +136,13 @@ public class TurnAndShootFromZones extends Command {
       }
     }
 
-    if(m_intakeTimer.hasElapsed(CommandConstants.IntakeBringInTime) && m_intakeRunOnce == false){
-      m_intake.moveIntakeIn();
+    if(!m_Timer.hasElapsed(CommandConstants.DisturbDuration)){
+      m_feeder.disturb();
+      m_conveyor.setTarget(-ConveyorConstants.RUNNING_SPEED);
+    }
+
+    if(m_Timer.hasElapsed(CommandConstants.IntakeBringInTime) && m_intakeRunOnce == false){
+      m_intake.aggitateIntake();
       m_intakeRunOnce = true;
     }
 
@@ -143,13 +152,15 @@ public class TurnAndShootFromZones extends Command {
     SmartDashboard.putBoolean("TASFZ: Ready to Shoot", isAligned);
     SmartDashboard.putNumber("TASFZ: Output H", outputH);
     SmartDashboard.putNumber("TASFZ: Heading Error", headingError);
-    SmartDashboard.putBoolean("TASFZ: Intake Timer", m_intakeTimer.hasElapsed(CommandConstants.IntakeBringInTime));
+    SmartDashboard.putBoolean("TASFZ: Intake Timer", m_Timer.hasElapsed(CommandConstants.IntakeBringInTime));
   }
 
   @Override public void end(boolean interrupted) {
     m_conveyor.setTarget(0);
     m_feeder.setSpeed(0);
-    m_intake.moveIntakeOut();
+    if(m_Timer.hasElapsed(CommandConstants.IntakeBringInTime)){
+      m_intake.moveIntakeOut();
+    }
   }
 
   @Override public boolean isFinished() { return false; }

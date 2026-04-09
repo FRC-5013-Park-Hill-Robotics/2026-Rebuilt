@@ -14,10 +14,10 @@ public class DriveConstants {
     public static final double movementLimitAmount = 40; //Given to x/y slew rate limiters
     public static final double rotationLimitAmount = 20; //Given to rotation slew rate limiter
     public static final double xyReduction = 0.75; //Multiplied to goToPose Outputs
-    public static final double goToPoseMaxspeeds = 0.2;
+    public static final double goToPoseMaxspeeds = 0.4;
     public static final double DistanceAndVelocityCoefficient = 0.05;
 
     public static final PIDController ControllerX = new PIDController(8, 0, 0);
     public static final PIDController ControllerY = new PIDController(8, 0, 0);
-    public static final PIDController ControllerH = new PIDController(0.03, 0, 0.0); //Error in Degrees, output in rotation rate
+    public static final PIDController ControllerH = new PIDController(0.045, 0, 0.002); //Error in Degrees, output in rotation rate
 }

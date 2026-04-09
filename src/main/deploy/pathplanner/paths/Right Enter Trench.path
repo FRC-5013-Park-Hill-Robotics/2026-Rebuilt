@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.136250000000001,
-        "y": 0.6656866197183104
+        "x": 7.150447227191413,
+        "y": 0.3761717352415017
       },
       "isLocked": false,
       "linkedName": "Right End Hairpin"
@@ -20,8 +20,8 @@
         "y": 0.63375
       },
       "prevControl": {
-        "x": 5.267957746478874,
-        "y": 0.5219718309859149
+        "x": 5.219624329159212,
+        "y": 0.6357781753130587
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.3,
       "rotationDegrees": 180.0
     }
   ],

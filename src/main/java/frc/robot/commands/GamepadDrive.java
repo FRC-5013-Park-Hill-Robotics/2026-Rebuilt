@@ -57,11 +57,11 @@ public class GamepadDrive extends Command {
 		// 	translationY = Math.sin(angle) * throttle;
 		// }
 
-		if(m_gamepad.getLeftTriggerAxis() > 0.5){
-			translationX = translationX/3;
-			translationY = translationY/3;
-			translationH = translationH/2;
-		}
+		// if(m_gamepad.getLeftTriggerAxis() > 0.5){
+		// 	translationX = translationX/3;
+		// 	translationY = translationY/3;
+		// 	translationH = translationH/2;
+		// }
 
 		if(m_gamepad.getHID().getRightBumperButton()){
 			translationX = translationX*.5;

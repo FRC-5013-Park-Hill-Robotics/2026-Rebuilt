@@ -3,10 +3,11 @@ package frc.robot.constants;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class IntakeConstants {
-    public static final double moveTime = 0.7; //Seconds
+    public static final double moveTime = 1.0; //Seconds
     public static final double moveInVolt = -3;
     public static final double moveOutVolt = 3; //Voltage
     public static final double moverAggitateTime = 0.5;
+    public static final double moveAggitateVolt = -1;
 
     public static final double noMovingTollerance = 0.2;
 

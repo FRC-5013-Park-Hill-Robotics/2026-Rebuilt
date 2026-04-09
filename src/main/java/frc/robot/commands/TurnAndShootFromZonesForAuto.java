@@ -41,11 +41,13 @@ public class TurnAndShootFromZonesForAuto extends Command {
 
   public TurnAndShootFromZonesForAuto(CommandSwerveDrivetrain drivetrain, LauncherRollers rollers, Conveyor conveyor, Feeder feeder, double shootTime) {
     m_controllerH.enableContinuousInput(-180, 180);
+    m_controllerH.setTolerance(1);
     m_drivetrain = drivetrain;
     m_launcherRollers = rollers;
     m_conveyor = conveyor;
     m_feeder = feeder;
     m_shootTime = shootTime;
+    m_Timer.start();
   }
 
   @Override
@@ -109,8 +111,11 @@ public class TurnAndShootFromZonesForAuto extends Command {
     double headingError = MathUtil.inputModulus(rawHeadingError + headingLead, -180, 180);
 
     //Rotation
-    double outputH = m_controllerH.calculate(headingError);
-    outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    double outputH = 0;
+    if(!m_controllerH.atSetpoint()){
+      outputH = m_controllerH.calculate(headingError);
+      outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    }
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shoot if Aligned on Target
@@ -124,6 +129,15 @@ public class TurnAndShootFromZonesForAuto extends Command {
         m_conveyor.setTarget(0);
         m_feeder.setSpeed(0);
       }
+    }
+
+    if(!m_Timer.hasElapsed(CommandConstants.DisturbDuration)){
+      m_feeder.disturb();
+      m_conveyor.setTarget(-ConveyorConstants.RUNNING_SPEED);
+    }
+
+    if(m_Timer.hasElapsed(1.5)){
+      m_Timer.reset();
     }
 
     // Telemetry

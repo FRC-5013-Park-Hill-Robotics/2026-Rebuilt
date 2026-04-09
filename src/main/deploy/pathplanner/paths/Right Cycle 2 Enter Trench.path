@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.960598591549297,
-        "y": 1.192640845070423
+        "x": 7.036869409660108,
+        "y": 0.47352415026833583
       },
       "isLocked": false,
       "linkedName": "Cycle 2 Hairpin Finish"
@@ -20,15 +20,20 @@
         "y": 0.63375
       },
       "prevControl": {
-        "x": 5.667165492957747,
-        "y": 0.44213028169014135
+        "x": 5.625259391771019,
+        "y": 0.5546511627906967
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Right Under Trench Start"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,7 +46,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 3.0,
     "rotation": 180.0
   },
   "reversed": false,

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9967441860536788,
-        "y": 6.833881932020362
+        "x": 2.428855098389982,
+        "y": 6.898783542039356
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.4185012272947324,
-        "y": 7.557179781631832
+        "x": 2.708421468523559,
+        "y": 7.470221626079058
       },
       "isLocked": false,
       "linkedName": "Left Shooting Position"
@@ -20,8 +20,8 @@
         "y": 7.35309481216458
       },
       "prevControl": {
-        "x": 4.0982719528007046,
-        "y": 7.304243474194629
+        "x": 4.094750098997078,
+        "y": 7.378532363545428
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4,
+      "waypointRelativePos": 0.3,
       "rotationDegrees": 180.0
     }
   ],
@@ -53,7 +53,7 @@
   "folder": "Left Trench Sequence",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -60.75117366345309
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

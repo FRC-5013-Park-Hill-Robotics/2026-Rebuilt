@@ -62,7 +62,7 @@ public class Intake extends SubsystemBase {
         intakeRightMotor.set(0);
 
         TalonFXConfiguration config2 = new TalonFXConfiguration();
-        config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+        config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
         config2.MotorOutput.NeutralMode = NeutralModeValue.Coast;
         config2.Slot0.kP = IntakeConstants.RollerGains.kP;
         config2.Slot0.kI = IntakeConstants.RollerGains.kI;
@@ -73,7 +73,7 @@ public class Intake extends SubsystemBase {
         config2.CurrentLimits.StatorCurrentLimit = 80;
         config2.CurrentLimits.SupplyCurrentLimit = 60;
         intakeRightMotor.getConfigurator().apply(config2);
-        intakeRightMotor.setControl(new Follower(CANConstants.INTAKE_L_ID, MotorAlignmentValue.Opposed));
+        //intakeRightMotor.setControl(new Follower(CANConstants.INTAKE_L_ID, MotorAlignmentValue.Opposed));
         intakeRightMotor.set(0);
 
         TalonFXConfiguration config3 = new TalonFXConfiguration();
@@ -101,7 +101,7 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         m_IntakeVelocityVoltage.withVelocity(m_intakeWheelLimiter.calculate(target));
         intakeLeftMotor.setControl(m_IntakeVelocityVoltage);
-        //intakeRightMotor.setControl(m_IntakeVelocityVoltage); Follower
+        intakeRightMotor.setControl(m_IntakeVelocityVoltage); //Follower
 
         double intakePos = intakeMoverMotor.getPosition().getValueAsDouble();
         double intakeTime = intakeMoverMotor.getPosition().getTimestamp().getTime();
@@ -130,13 +130,13 @@ public class Intake extends SubsystemBase {
         }
         if(m_intakePosition == IntakeState.Aggitate){
             state = "Aggitating";
-            m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveInVolt));
+            m_MoverVelocityVoltage.withOutput(m_moverlimiter.calculate(IntakeConstants.moveAggitateVolt));
             intakeMoverMotor.setControl(m_MoverVelocityVoltage);
             
-            if(m_moverTimer.hasElapsed(IntakeConstants.moverAggitateTime)){
-                m_moverTimer.reset();
-                moveIntakeOut();
-            }
+            // if(m_moverTimer.hasElapsed(IntakeConstants.moverAggitateTime)){
+            //     m_moverTimer.reset();
+            //     moveIntakeOut();
+            // }
         }
         if(m_intakePosition == IntakeState.In){
             state = "In";
