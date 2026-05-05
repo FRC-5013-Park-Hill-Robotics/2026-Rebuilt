@@ -58,7 +58,7 @@ public final class LauncherConstants {
       {9,85},
       {20,85}
     };
-    public static final LinearInterpolator shooterGroundInterpolator1 = new LinearInterpolator(SHOOTER_HUB_DATA1);
+    public static final LinearInterpolator shooterGroundInterpolator1 = new LinearInterpolator(SHOOTER_GROUND_DATA1);
     
     //Format: {RollerSpeed, Distance, TOF,  ExitVelocity}
     public static final double[][] SHOOTER_DATA = {

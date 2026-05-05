@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.constants.LiveDriveStats;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LauncherRollers;
@@ -21,6 +22,7 @@ public class DynamicTargetPose extends Command {
   /** Creates a new Dynamic_Target_Pose. */
   public DynamicTargetPose(CommandXboxController mOpperatorController) {
     m_gamepad = mOpperatorController;
+    addRequirements(RobotContainer.instance.getDrivetrain());
   }
 
   // Called when the command is initially scheduled.
@@ -31,7 +33,7 @@ public class DynamicTargetPose extends Command {
   @Override
   public void execute() {
     double translationX = m_gamepad.getLeftX()*0.05;
-		double translationY = m_gamepad.getLeftY()*0.05;
+		double translationY = -m_gamepad.getLeftY()*0.05;
 
     Pose2d alias = LiveDriveStats.DYNAMIC_SHOOT_TARGET;
     LiveDriveStats.DYNAMIC_SHOOT_TARGET = new Pose2d(alias.getX()+translationX, alias.getY()+translationY, new Rotation2d(0));

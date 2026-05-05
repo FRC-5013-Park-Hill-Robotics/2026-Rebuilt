@@ -42,7 +42,7 @@ public class LauncherRollers extends SubsystemBase {
   private VelocityVoltage m_Voltage = new VelocityVoltage(0);
 
   private double goalSpeed = 0;
-  private boolean STOP = false;
+  private boolean STOP = true;
 
   private boolean RevWheels = false; //When outtaking, spin up wheels a little bit
   private Timer RevTimer = new Timer();

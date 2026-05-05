@@ -63,12 +63,12 @@ public class GamepadDrive extends Command {
 		// 	translationH = translationH/2;
 		// }
 
-		if(m_gamepad.getHID().getRightBumperButton()){
-			translationX = translationX*.5;
-			translationY = translationY*.5;
-		}
+		// if(m_gamepad.getHID().getRightBumperButton()){
+		// 	translationX = translationX*.5;
+		// 	translationY = translationY*.5;
+		// }
 
-		double i = 1;
+		double i = 0.2;
 		LiveDriveStats.OUTPUT_X = translationX*i;
 		LiveDriveStats.OUTPUT_Y = translationY*i;
 		LiveDriveStats.OUTPUT_H = translationH;

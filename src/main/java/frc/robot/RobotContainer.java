@@ -102,17 +102,18 @@ public class RobotContainer {
    
     mDriver.y().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()))
       .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
-    mDriver.x().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor, mFeeder, mDriver));
+    mDriver.x().whileTrue(new DynamicTargetPose(mDriver));
     // mDriver.a().onTrue(mIntake.toggleIntakePositionC()); 
     mDriver.b().onTrue(mIntake.moveIntakeInC()); 
     mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
+
 
     mDriver.leftBumper().onTrue(mIntake.setTargetC(-IntakeConstants.intakeSpeed).alongWith(mConveyor.setTargetC(-ConveyorConstants.RUNNING_SPEED)).alongWith(mFeeder.disturbCommand()))
      .onFalse(mIntake.setTargetC(0).alongWith(mConveyor.setTargetC(0)).alongWith(mFeeder.setSpeedCommand(0)));
     mDriver.rightBumper().onTrue(mIntake.setTargetC(IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
 
-    mDriver.leftTrigger().whileTrue(new TurnAndShootFromZones(mDrivetrain, mRollers, mConveyor, mFeeder, mIntake, mDriver));
+    mDriver.leftTrigger().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor, mFeeder, mDriver));
     mDriver.rightTrigger().whileTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
       .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
     
@@ -181,7 +182,8 @@ public class RobotContainer {
   }
   
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    return new Command() {};
+    //return autoChooser.getSelected();
   }
 
   public static void setAlliance(Alliance alliance){

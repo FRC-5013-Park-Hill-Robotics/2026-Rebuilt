@@ -136,15 +136,15 @@ public class TurnAndShootFromZones extends Command {
       }
     }
 
-    if(!m_Timer.hasElapsed(CommandConstants.DisturbDuration)){
-      m_feeder.disturb();
-      m_conveyor.setTarget(-ConveyorConstants.RUNNING_SPEED);
-    }
+    // if(!m_Timer.hasElapsed(CommandConstants.DisturbDuration)){
+    //   m_feeder.disturb();
+    //   m_conveyor.setTarget(-ConveyorConstants.RUNNING_SPEED);
+    // }
 
-    if(m_Timer.hasElapsed(CommandConstants.IntakeBringInTime) && m_intakeRunOnce == false){
-      m_intake.aggitateIntake();
-      m_intakeRunOnce = true;
-    }
+    // if(m_Timer.hasElapsed(CommandConstants.IntakeBringInTime) && m_intakeRunOnce == false){
+    //   m_intake.aggitateIntake();
+    //   m_intakeRunOnce = true;
+    // }
 
     // Telemetry
     LiveDriveStats.CURRENT_SHOOT_TARGET1 = targetPose;

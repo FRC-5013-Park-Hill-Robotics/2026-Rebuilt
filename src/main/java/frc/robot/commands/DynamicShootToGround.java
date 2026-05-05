@@ -94,8 +94,11 @@ public class DynamicShootToGround extends Command {
     double headingError = MathUtil.inputModulus(rawHeadingError + headingLead, -180, 180);
 
     //Rotation
-    double outputH = m_controllerH.calculate(headingError);
-    outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    double outputH = 0;
+    if(!m_controllerH.atSetpoint()){
+      outputH = m_controllerH.calculate(headingError);
+      outputH = MathUtil.clamp(outputH, -DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds, DriveConstants.MaxAngularRate*DriveConstants.goToPoseMaxspeeds);
+    }
     LiveDriveStats.OUTPUT_H = outputH;
 
     //Shoot if Aligned on Target

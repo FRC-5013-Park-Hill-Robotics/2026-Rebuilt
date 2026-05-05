@@ -41,27 +41,27 @@ public class PrepareShooter extends Command {
   public void execute() {
     SwerveDriveState state = m_drivetrain.getState();
     Pose2d currentPose = state.Pose;
-    Pose2d targetPose;
+    Pose2d targetPose = LiveDriveStats.DYNAMIC_SHOOT_TARGET;
 
     // 1. Zone logic
-    if (m_alliance == Alliance.Blue) {
-      if (currentPose.getX() < PoseConstants.X_BLUE_SHUTTLE_CUTOFF) {
-        targetPose = PoseConstants.BLUE_HUB;
-      } else {
-        targetPose = currentPose.nearest(PoseConstants.BLUE_SHUTTLE_POSES);
-      }
-    } else { 
-      if (currentPose.getX() > PoseConstants.X_RED_SHUTTLE_CUTOFF) {
-        targetPose = PoseConstants.RED_HUB;
-      } else {
-        targetPose = currentPose.nearest(PoseConstants.RED_SHUTTLE_POSES);
-      }
-    }
+    // if (m_alliance == Alliance.Blue) {
+    //   if (currentPose.getX() < PoseConstants.X_BLUE_SHUTTLE_CUTOFF) {
+    //     targetPose = PoseConstants.BLUE_HUB;
+    //   } else {
+    //     targetPose = currentPose.nearest(PoseConstants.BLUE_SHUTTLE_POSES);
+    //   }
+    // } else { 
+    //   if (currentPose.getX() > PoseConstants.X_RED_SHUTTLE_CUTOFF) {
+    //     targetPose = PoseConstants.RED_HUB;
+    //   } else {
+    //     targetPose = currentPose.nearest(PoseConstants.RED_SHUTTLE_POSES);
+    //   }
+    // }
 
     //ShotData data = ShooterCalculator.calculateShot(state.Speeds.vxMetersPerSecond, state.Speeds.vyMetersPerSecond, currentPose, targetPose, LauncherConstants.TargetConstants.SHOOTER_DATA);
     
     double distToTarget = Math.hypot(targetPose.getX()-state.Pose.getX(), targetPose.getY()-state.Pose.getY());
-    double shooterSpeed = LauncherConstants.TargetConstants.shooterHubInterpolator1.getInterpolatedValue(distToTarget);
+    double shooterSpeed = LauncherConstants.TargetConstants.shooterGroundInterpolator1.getInterpolatedValue(distToTarget);
 
     // Rollers
     if(LiveDriveStats.AUTO_SHOOTING){
