@@ -71,7 +71,7 @@ public class GamepadDrive extends Command {
 		double i = 0.2;
 		LiveDriveStats.OUTPUT_X = translationX*i;
 		LiveDriveStats.OUTPUT_Y = translationY*i;
-		LiveDriveStats.OUTPUT_H = translationH;
+		LiveDriveStats.OUTPUT_H = translationH*0.5;
 		
 		// m_drivetrain.setControl(drive
 		// 	.withVelocityX(-CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(i*translationX)))

@@ -95,14 +95,14 @@ public class RobotContainer {
   private void configureBindings() {
     mDrivetrain.setDefaultCommand(new GamepadDrive(mDriver));
 
-    mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
+    //mRollers.setDefaultCommand(new PrepareShooter(mDrivetrain, mRollers));
 
     mDriver.back().onTrue(mDrivetrain.runOnce(() -> mDrivetrain.seedFieldCentric()));
     mDriver.start().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
    
     mDriver.y().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()))
       .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
-    mDriver.x().whileTrue(new DynamicTargetPose(mDriver));
+    //mDriver.x().whileTrue(new DynamicTargetPose(mDriver));
     // mDriver.a().onTrue(mIntake.toggleIntakePositionC()); 
     mDriver.b().onTrue(mIntake.moveIntakeInC()); 
     mDriver.a().onTrue(mIntake.moveIntakeOutC()); 
@@ -113,24 +113,24 @@ public class RobotContainer {
     mDriver.rightBumper().onTrue(mIntake.setTargetC(IntakeConstants.intakeSpeed))
      .onFalse(mIntake.setTargetC(0));
 
-    mDriver.leftTrigger().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor, mFeeder, mDriver));
-    mDriver.rightTrigger().whileTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
-      .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
+    //mDriver.leftTrigger().whileTrue(new DynamicShootToGround(mDrivetrain, mRollers, mConveyor, mFeeder, mDriver));
+    // mDriver.rightTrigger().whileTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mFeeder.outtakeCommand()).alongWith(mRollers.setSpeedCommand(LauncherConstants.FROM_TOWER_SPEED)))
+    //   .onFalse(mConveyor.setTargetC(0).alongWith(mFeeder.setSpeedCommand(0)));
     
-    // mDriver.povUp().onTrue(mRollers.incrementSpeedCommand(0.5));
-    // mDriver.povDown().onTrue(mRollers.incrementSpeedCommand(-0.5));
+    mDriver.povUp().onTrue(mRollers.incrementSpeedCommand(1));
+    mDriver.povDown().onTrue(mRollers.incrementSpeedCommand(-1));
     
-    // mDriver.povLeft().onTrue(mRollers.incrementSpeedCommand(-5));
-    // mDriver.povRight().onTrue(mRollers.incrementSpeedCommand(5));
+    mDriver.povLeft().onTrue(mRollers.incrementSpeedCommand(-1));
+    mDriver.povRight().onTrue(mRollers.incrementSpeedCommand(1));
 
     // mOpperator.leftTrigger().whileTrue(mRollers.setSpeedsCommand(LauncherConstants.SOLID_POSITION_TOP, LauncherConstants.SOLID_POSITION_BACK));
     // mOpperator.rightTrigger().onTrue(mConveyor.setTargetC(ConveyorConstants.RUNNING_SPEED).alongWith(mRollers.setSpeedBottomCommand(LauncherConstants.OUTTAKE_SPEED_BOTTOM)))
     //   .onFalse(mConveyor.setTargetC(0).alongWith(mRollers.setSpeedBottomCommand(0)));
 
-    mOpperator.a().whileTrue(new DynamicTargetPose(mOpperator));
-    mOpperator.b().onTrue(camera.toggleVisionUpdatesC());
-    mOpperator.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
-    mOpperator.y().onTrue(mRollers.toggleAutoShootingCommand());
+    // mOpperator.a().whileTrue(new DynamicTargetPose(mOpperator));
+    // mOpperator.b().onTrue(camera.toggleVisionUpdatesC());
+    // mOpperator.x().onTrue(mRollers.toggleStopCommand().alongWith(mConveyor.stopC()));
+    // mOpperator.y().onTrue(mRollers.toggleAutoShootingCommand());
   }
  
   public void updateField(){
