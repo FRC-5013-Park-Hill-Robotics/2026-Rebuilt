@@ -38,6 +38,7 @@ import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LauncherRollers;
+import frc.robot.subsystems.QuestNavSub;
 import frc.robot.subsystems.Vision;
 import frc.robot.commands.TurnToPose;
 import frc.robot.commands.TurnAndShootFromZones;
@@ -68,6 +69,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
 
   public final Vision camera = new Vision(mDrivetrain);
+  public final QuestNavSub questNav = new QuestNavSub(mDrivetrain);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -200,5 +202,9 @@ public class RobotContainer {
 
   public CommandSwerveDrivetrain getDrivetrain(){
     return mDrivetrain;
+  }
+
+  public QuestNavSub getQuestNavSub(){
+    return questNav;
   }
 }

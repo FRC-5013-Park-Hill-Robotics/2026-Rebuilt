@@ -79,7 +79,7 @@ public class GamepadDrive extends Command {
 		// 	.withRotationalRate(-CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(translationH)));
 
 		//SmartDashboard.putNumber("Throttle", throttle);
-		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()) );
+		SmartDashboard.putNumber("Drive Rotation", -CommandSwerveDrivetrain.percentOutputToRadiansPerSecond(m_gamepad.getRightX()));
 		SmartDashboard.putNumber("VX", CommandSwerveDrivetrain.percentOutputToMetersPerSecond(xLimiter.calculate(translationX)));
 		SmartDashboard.putNumber("VY", -CommandSwerveDrivetrain.percentOutputToMetersPerSecond(yLimiter.calculate(translationY)));
 	}

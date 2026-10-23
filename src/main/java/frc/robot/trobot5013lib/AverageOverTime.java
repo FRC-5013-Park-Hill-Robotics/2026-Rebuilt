@@ -20,9 +20,9 @@ public class AverageOverTime {
         mOutlier = outlier;
     }
 
-    public void addMessurement(double messurement, double timestamp){
-        if(messurement < mOutlier){
-            mMessurements.push(messurement);
+    public void addMeasurement(double measurement, double timestamp){
+        if(measurement < mOutlier){
+            mMessurements.push(measurement);
             mTimestamps.push(timestamp);
         }
     }

@@ -66,6 +66,51 @@ public class VisionConstants {
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
 
+// QuestNav Constants
+
+
+        public static final class QuestNavConstants {
+
+    /**
+     * Transform from the robot pose-estimator origin
+     * to the QuestNav pose origin.
+     *
+     * Replace these measurements with your actual mount.
+     */
+         public static final Transform3d kRobotToQuest =
+        new Transform3d(
+            0.0,
+            0.0,
+            0.0,
+            new Rotation3d()
+        );
+
+    /**
+     * QuestNav X standard deviation, meters.
+     */
+        public static final double kQuestNavXStdDev = 0.02;
+
+    /**
+     * QuestNav Y standard deviation, meters.
+     */
+         public static final double kQuestNavYStdDev = 0.02;
+
+    /**
+     * QuestNav heading standard deviation, radians.
+     */
+         public static final double kQuestNavThetaStdDev =
+        Math.toRadians(5.0);
+
+    /**
+     * QuestNav pose standard deviations.
+     */
+         public static final Matrix<N3, N1> kQuestNavStdDevs =
+        VecBuilder.fill(
+            kQuestNavXStdDev,
+            kQuestNavYStdDev,
+            kQuestNavThetaStdDev
+        );
+}
         // // Physical properties
         // public static final double kTrackWidth = Units.inchesToMeters(18.5);
         // public static final double kTrackLength = Units.inchesToMeters(18.5);
