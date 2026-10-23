@@ -124,7 +124,7 @@ public class Vision extends SubsystemBase {
         if(visionUpdatesEnabled){
             processCamera(FrontCamera, FrontPhotonEstimator);
             //processCamera(BackCamera, BackPhotonEstimator);
-            //processCamera(LeftCamera, LeftPhotonEstimator);
+            processCamera(LeftCamera, LeftPhotonEstimator);
             //processCamera(RightCamera, RightPhotonEstimator);
         }
         SmartDashboard.putBoolean("Vision Enabled", visionUpdatesEnabled);
@@ -254,6 +254,7 @@ public class Vision extends SubsystemBase {
     public void toggleVisionUpdates(){
         visionUpdatesEnabled = !visionUpdatesEnabled;
     }
+
     public Command toggleVisionUpdatesC(){
         Command result = runOnce(()->toggleVisionUpdates());
         return result;

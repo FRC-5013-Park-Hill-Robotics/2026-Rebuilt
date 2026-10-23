@@ -108,7 +108,7 @@ public class Intake extends SubsystemBase {
 
         String state = "Null";
 
-        MoveOutAoT.addMessurement(intakePos, intakeTime);
+        MoveOutAoT.addMeasurement(intakePos, intakeTime);
         // !hasElapsed so it only runs for moverIn/OutTime seconds
         if(m_intakePosition == IntakeState.TowardsOut){
             state = "Towards Out";
